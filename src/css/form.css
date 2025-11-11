@@ -46,8 +46,8 @@ h1 {
 
 .side-input:focus {
 	outline: none;
-	border-color: var(--primary-color);
-	box-shadow: 0 0 0 2px var(--primary-color-light);
+	border-color: #f97316;
+	box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
 }
 
 .button-group {
@@ -72,10 +72,10 @@ h1 {
 }
 
 .action-button.primary {
-	background: var(--primary-color);
+	background: linear-gradient(135deg, #f97316, #fbbf24);
 	color: white;
 }
 
 .action-button.primary:hover {
-	background: var(--primary-color-dark);
+	background: linear-gradient(135deg, #ea580c, #f59e0b);
 }
