@@ -17,6 +17,7 @@ function Card({ card, onRateCard }: CardProps) {
 		if (card.rate === 0 && inputValue === "2") {
 			setInputValue("1");
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [card]);
 
 	const handleShowNextSide = () => {
