@@ -1,84 +1,81 @@
 .container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+	padding: 2rem;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 
 .content {
-  background: var(--background-light);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 2rem;
 }
 
 h1 {
-  margin-bottom: 2rem;
-  color: var(--text-primary);
+	margin-bottom: 2rem;
+	color: var(--text-primary);
 }
 
 .card-id {
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
+	color: var(--text-secondary);
+	margin-bottom: 1.5rem;
 }
 
 .sides-container {
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 2rem;
+	display: grid;
+	gap: 1rem;
+	margin-bottom: 2rem;
 }
 
 .input-group {
-  display: grid;
-  gap: 0.5rem;
+	display: grid;
+	gap: 0.5rem;
 }
 
 .side-label {
-  font-weight: 500;
-  color: var(--text-primary);
+	font-weight: 500;
+	color: var(--text-primary);
 }
 
 .side-input {
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 1rem;
-  font-family: inherit;
-  background: var(--input-background);
-  color: var(--text-primary);
+	padding: 0.75rem;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	font-size: 1rem;
+	font-family: inherit;
+	background: var(--input-background);
+	color: var(--text-primary);
 }
 
 .side-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-color-light);
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 2px var(--primary-color-light);
 }
 
 .button-group {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
+	display: flex;
+	gap: 1rem;
+	justify-content: flex-end;
 }
 
 .action-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--button-background);
-  color: var(--text-primary);
-  transition: background-color 0.2s;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 4px;
+	font-weight: 500;
+	cursor: pointer;
+	background: var(--button-background);
+	color: var(--text-primary);
+	transition: background-color 0.2s;
 }
 
 .action-button:hover {
-  background: var(--button-hover);
+	background: var(--button-hover);
 }
 
 .action-button.primary {
-  background: var(--primary-color);
-  color: white;
+	background: var(--primary-color);
+	color: white;
 }
 
 .action-button.primary:hover {
-  background: var(--primary-color-dark);
+	background: var(--primary-color-dark);
 }

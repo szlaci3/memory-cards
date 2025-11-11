@@ -8,7 +8,7 @@ function RateCards() {
 
 	useEffect(() => {
 		axios
-			.get(`${import.meta.env.VITE_SERVERIP}/cards`)
+			.get("/cards")
 			.then((response) => {
 				setCardList(
 					response.data.map((card: CardFromApi) => ({
@@ -32,7 +32,7 @@ function RateCards() {
 		});
 
 		axios
-			.put(`${import.meta.env.VITE_SERVERIP}/cards/${card.id}`, {
+			.put(`/cards/${card.id}`, {
 				...card,
 				sides: JSON.stringify(card.sides),
 				rate,

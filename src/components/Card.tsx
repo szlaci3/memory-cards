@@ -39,7 +39,7 @@ function Card({ card, onRateCard }: CardProps) {
 		<div className="flashcard">
 			<div>
 				<div className="language-indicator">
-					<span>EN → FR</span>
+					<span>EN → NL</span>
 				</div>
 
 				<div className="card-content">
