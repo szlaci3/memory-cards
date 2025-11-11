@@ -213,3 +213,15 @@ nav a {
 	border-radius: 9999px;
 	background: linear-gradient(135deg, #f97316, #fbbf24);
 }
+
+.controls button:last-child {
+	background: linear-gradient(135deg, #f97316, #fbbf24);
+	color: white;
+	border: none;
+	border-radius: 0.5rem;
+	transition: background 0.2s;
+}
+
+.controls button:last-child:hover {
+	background: linear-gradient(135deg, #ea580c, #f59e0b);
+}
