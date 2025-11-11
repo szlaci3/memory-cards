@@ -1,7 +1,6 @@
 import axios from "axios";
 import { type ChangeEvent, useEffect, useState } from "react";
 import type { CardFromApi, CardType } from "types/index";
-import { v4 as uuidv4 } from "uuid";
 import "css/form.css";
 import { useNavigate, useParams } from "react-router";
 
@@ -62,7 +61,7 @@ const CardForm = () => {
 			if (!card) {
 				// Create new card
 				const newCard: CardFromApi = {
-					id: uuidv4(),
+					id: crypto.randomUUID(),
 					sides: JSON.stringify(updatedSides),
 					rate: null,
 					reviewedAt: null,
