@@ -1,8 +1,8 @@
-import axios from "axios";
 import { type ChangeEvent, useEffect, useState } from "react";
-import type { CardFromApi, CardType } from "types/index";
+import type { CardType } from "types/index";
 import "css/form.css";
 import { useNavigate, useParams } from "react-router";
+import { db, initializeDatabase } from "utils/db";
 
 const CardForm = () => {
 	const [sides, setSides] = useState<string[]>(["", ""]);
@@ -30,10 +30,15 @@ const CardForm = () => {
 
 	const fetchCard = async (cardId: string) => {
 		try {
-			const response = await axios.get(`/cards/${cardId}`);
-			setCard(response.data);
-			setSides(JSON.parse(response.data.sides));
-		} catch (err) {
+			await initializeDatabase();
+			const card = await db.cards.get(cardId);
+			if (card) {
+				setCard(card);
+				setSides(card.sides);
+			} else {
+				setError("Card not found");
+			}
+		} catch {
 			setError("Error fetching card data");
 		} finally {
 			setLoading(false);
@@ -57,25 +62,23 @@ const CardForm = () => {
 
 	const handleSubmit = async (): Promise<void> => {
 		try {
+			await initializeDatabase();
 			const updatedSides = sides.filter((item) => !!item);
 			if (!card) {
 				// Create new card
-				const newCard: CardFromApi = {
+				const newCard: CardType = {
 					id: crypto.randomUUID(),
-					sides: JSON.stringify(updatedSides),
+					sides: updatedSides,
 					rate: null,
 					reviewedAt: null,
 				};
 
-				await axios.post("/cards", newCard);
+				await db.cards.add(newCard);
 			} else {
 				// Update existing card
-				const updatedCard: CardFromApi = {
-					...card!,
-					rate: card.rate != null ? card.rate.toString() : card.rate,
-					sides: JSON.stringify(updatedSides),
-				};
-				await axios.put(`/cards/${card.id}`, updatedCard);
+				await db.cards.update(card.id, {
+					sides: updatedSides,
+				});
 			}
 		} catch (error) {
 			console.error("Error creating/updating card:", error);

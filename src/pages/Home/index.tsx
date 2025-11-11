@@ -1,49 +1,36 @@
-import axios from "axios";
 import CardList from "components/CardList";
 import { useEffect, useState } from "react";
-import type { CardFromApi, CardType } from "types/index";
+import type { CardType } from "types/index";
+import { db, initializeDatabase } from "utils/db";
 
 function RateCards() {
 	const [cardList, setCardList] = useState<CardType[]>([]);
 
 	useEffect(() => {
-		axios
-			.get("/cards")
-			.then((response) => {
-				setCardList(
-					response.data.map((card: CardFromApi) => ({
-						...card,
-						rate: card.rate ? parseInt(card.rate) : card.rate,
-						sides: JSON.parse(card.sides),
-					})),
-				);
-			})
-			.catch((error) => {
+		async function loadCards() {
+			try {
+				await initializeDatabase();
+				const cards = await db.cards.toArray();
+				setCardList(cards);
+			} catch (error) {
 				console.error("Error fetching flashcards:", error);
-			});
+			}
+		}
+		loadCards();
 	}, []);
 
-	const handleRateCard = (card: CardType, rate: number) => {
-		const updatedCardList = cardList.map((cardItem) => {
-			if (card.id === cardItem.id) {
-				return { ...cardItem, rate, reviewedAt: Date.now() };
-			}
-			return cardItem;
-		});
-
-		axios
-			.put(`/cards/${card.id}`, {
-				...card,
-				sides: JSON.stringify(card.sides),
-				rate,
-				reviewedAt: Date.now(),
-			})
-			.then(() => {
-				setCardList(updatedCardList);
-			})
-			.catch((error) => {
-				console.error("Error updating flashcard:", error);
-			});
+	const handleRateCard = async (card: CardType, rate: number) => {
+		try {
+			const updatedCard = { ...card, rate, reviewedAt: Date.now() };
+			await db.cards.update(card.id, updatedCard);
+			setCardList((prevList) =>
+				prevList.map((cardItem) =>
+					card.id === cardItem.id ? updatedCard : cardItem,
+				),
+			);
+		} catch (error) {
+			console.error("Error updating flashcard:", error);
+		}
 	};
 
 	return (

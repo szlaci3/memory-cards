@@ -11,6 +11,9 @@ importers:
       axios:
         specifier: ^1.7.9
         version: 1.7.9(debug@4.4.0)
+      dexie:
+        specifier: ^4.2.1
+        version: 4.2.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -781,6 +784,9 @@ packages:
 
   deprecation@2.3.1:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
+
+  dexie@4.2.1:
+    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   electron-to-chromium@1.5.78:
     resolution: {integrity: sha512-UmwIt7HRKN1rsJfddG5UG7rCTCTAKoS9JeOy/R0zSenAyaZ8SU3RuXlwcratxhdxGRNpk03iq8O7BA3W7ibLVw==}
@@ -1961,6 +1967,8 @@ snapshots:
   delayed-stream@1.0.0: {}
 
   deprecation@2.3.1: {}
+
+  dexie@4.2.1: {}
 
   electron-to-chromium@1.5.78: {}
 
