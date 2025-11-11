@@ -1,11 +1,12 @@
 import { type ChangeEvent, useEffect, useState } from "react";
-import type { CardType } from "types/index";
+import type { CardCategory, CardType } from "types/index";
 import "css/form.css";
 import { useNavigate, useParams } from "react-router";
 import { db, initializeDatabase } from "utils/db";
 
 const CardForm = () => {
 	const [sides, setSides] = useState<string[]>(["", ""]);
+	const [category, setCategory] = useState<CardCategory>("EN to NL");
 	const [card, setCard] = useState<CardType | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,7 @@ const CardForm = () => {
 		return () => {
 			setCard(null);
 			setSides(["", ""]);
+			setCategory("EN to NL");
 			setError(null);
 			setLoading(true);
 		};
@@ -35,6 +37,7 @@ const CardForm = () => {
 			if (card) {
 				setCard(card);
 				setSides(card.sides);
+				setCategory(card.category || "EN to NL");
 			} else {
 				setError("Card not found");
 			}
@@ -71,6 +74,7 @@ const CardForm = () => {
 					sides: updatedSides,
 					rate: null,
 					reviewedAt: null,
+					category,
 				};
 
 				await db.cards.add(newCard);
@@ -78,6 +82,7 @@ const CardForm = () => {
 				// Update existing card
 				await db.cards.update(card.id, {
 					sides: updatedSides,
+					category,
 				});
 			}
 		} catch (error) {
@@ -108,6 +113,22 @@ const CardForm = () => {
 				<div className="card-form" key={id} id={id}>
 					{/* Card ID field */}
 					{card && <h4 className="card-id">Card ID: {card.id}</h4>}
+
+					<div className="category-selector">
+						<label className="side-label" htmlFor="category">
+							Category
+						</label>
+						<select
+							id="category"
+							className="category-select"
+							value={category}
+							onChange={(e) => setCategory(e.target.value as CardCategory)}
+						>
+							<option value="EN to NL">EN to NL</option>
+							<option value="NL to EN">NL to EN</option>
+							<option value="Dev">Dev</option>
+						</select>
+					</div>
 
 					<div className="sides-container">
 						{sides.map((side, index) => {

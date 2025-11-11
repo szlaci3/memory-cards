@@ -10,6 +10,10 @@ export const routes: Route[] = [
     path: "/",
   },
   {
+    name: "List",
+    path: "/list",
+  },
+  {
     name: "Card Form",
     path: "/cardForm",
   },

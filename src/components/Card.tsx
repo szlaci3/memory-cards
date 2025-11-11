@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import type { CardProps, CardType } from "types/index";
+import type { CardCategory, CardProps, CardType } from "types/index";
 
-function Card({ card, onRateCard }: CardProps) {
+function Card({
+	card,
+	onRateCard,
+	allCards,
+	selectedCategory,
+	onCategoryChange,
+}: CardProps) {
 	const [revealCount, setRevealCount] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
 	const navigate = useNavigate();
@@ -36,14 +42,46 @@ function Card({ card, onRateCard }: CardProps) {
 	const option3 = card.rate === 0 ? 2 : card.rate || 2;
 	const option4 = Math.max(3, Math.floor(option3 * 1.4));
 
+	const category = card.category || "EN to NL";
+	const isDevCategory = category === "Dev";
+
+	// Check which categories have cards
+	const categoriesWithCards: Set<CardCategory> = new Set();
+	for (const c of allCards) {
+		categoriesWithCards.add(c.category || "EN to NL");
+	}
+
+	const allCategories: CardCategory[] = ["EN to NL", "NL to EN", "Dev"];
+
+	const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const newCategory = e.target.value as CardCategory;
+		setRevealCount(0);
+		onCategoryChange(newCategory);
+	};
+
 	return (
 		<div className="flashcard">
 			<div>
 				<div className="language-indicator">
-					<span>EN → NL</span>
+					<select
+						className="category-button"
+						value={selectedCategory}
+						onChange={handleCategoryChange}
+						aria-label="Select card category"
+					>
+						{allCategories.map((cat) => (
+							<option
+								key={cat}
+								value={cat}
+								disabled={!categoriesWithCards.has(cat)}
+							>
+								{cat}
+							</option>
+						))}
+					</select>
 				</div>
 
-				<div className="card-content">
+				<div className={`card-content ${isDevCategory ? "dev-content" : ""}`}>
 					{card.sides
 						.slice(0, revealCount + 1)
 						.map((side: string, index: number) => (
