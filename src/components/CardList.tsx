@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import type { CardCategory, CardListProps, CardType } from "src/types";
 import { selectNextCard } from "utils/utils";
 import Card from "./Card";
 
-function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
+function CardList({ cards, onRateCard }: CardListProps) {
+	const [searchParams] = useSearchParams();
+	const navigate = useNavigate();
+	const initialCardId = searchParams.get("cardId") || undefined;
 	const [selectedCategory, setSelectedCategory] =
 		useState<CardCategory>("EN to NL");
 	const [filteredCards, setFilteredCards] = useState<CardType[]>([]);
@@ -11,9 +15,27 @@ function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
 
 	// Filter cards by category
 	useEffect(() => {
-		const filtered = cards.filter(
-			(card) => (card.category || "EN to NL") === selectedCategory,
-		);
+		let filtered: CardType[];
+
+		if (selectedCategory === "NL to EN") {
+			// For "NL to EN", show "EN to NL" cards with inverted sides
+			const enToNlCards = cards.filter(
+				(card) => (card.category || "EN to NL") === "EN to NL",
+			);
+			// Create inverted versions: swap sides[0] and sides[1], keep rest the same
+			filtered = enToNlCards.map((card) => ({
+				...card,
+				sides:
+					card.sides.length >= 2
+						? [card.sides[1], card.sides[0], ...card.sides.slice(2)]
+						: card.sides,
+			}));
+		} else {
+			filtered = cards.filter(
+				(card) => (card.category || "EN to NL") === selectedCategory,
+			);
+		}
+
 		setFilteredCards(filtered);
 
 		// If selected category has no cards, switch to first available category
@@ -22,7 +44,16 @@ function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
 			for (const card of cards) {
 				categoriesWithCards.add(card.category || "EN to NL");
 			}
-			const allCategories: CardCategory[] = ["EN to NL", "NL to EN", "Dev"];
+			// If there are "EN to NL" cards, "NL to EN" should be available
+			if (categoriesWithCards.has("EN to NL")) {
+				categoriesWithCards.add("NL to EN");
+			}
+			const allCategories: CardCategory[] = [
+				"EN to NL",
+				"NL to EN",
+				"Question NL",
+				"Dev",
+			];
 			const firstAvailable = allCategories.find((cat) =>
 				categoriesWithCards.has(cat),
 			);
@@ -38,6 +69,8 @@ function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
 			const card = cards.find((c) => c.id === initialCardId);
 			if (card) {
 				// Set the category to match the card's category
+				// If card is "EN to NL", we could show it in "NL to EN" mode, but for now
+				// we'll show it in its original category
 				setSelectedCategory(card.category || "EN to NL");
 			}
 		}
@@ -69,8 +102,20 @@ function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
 
 	const handleRateCard = (rating: number) => {
 		if (currentCardIndex >= 0 && currentCardIndex < filteredCards.length) {
-			onRateCard(filteredCards[currentCardIndex], rating);
+			const displayedCard = filteredCards[currentCardIndex];
+			// If we're in "NL to EN" mode, find the original card to rate
+			// (the displayed card has inverted sides, but we need to rate the original)
+			const cardToRate =
+				selectedCategory === "NL to EN"
+					? cards.find((c) => c.id === displayedCard.id) || displayedCard
+					: displayedCard;
+			onRateCard(cardToRate, rating);
 			setCurrentCardIndex((prev) => selectNextCard(filteredCards, prev));
+
+			// Remove initialCardId from URL after rating if it exists
+			if (initialCardId) {
+				navigate("/", { replace: true });
+			}
 		}
 	};
 
@@ -78,12 +123,6 @@ function CardList({ cards, onRateCard, initialCardId }: CardListProps) {
 		currentCardIndex >= 0 && currentCardIndex < filteredCards.length
 			? filteredCards[currentCardIndex]
 			: null;
-
-	// Check which categories have cards
-	const categoriesWithCards: Set<CardCategory> = new Set();
-	for (const card of cards) {
-		categoriesWithCards.add(card.category || "EN to NL");
-	}
 
 	return (
 		<div className="card-list">

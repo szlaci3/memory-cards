@@ -1,13 +1,10 @@
 import CardList from "components/CardList";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
 import type { CardType } from "types/index";
 import { db, initializeDatabase } from "utils/db";
 
 function RateCards() {
 	const [cardList, setCardList] = useState<CardType[]>([]);
-	const [searchParams] = useSearchParams();
-	const cardIdParam = searchParams.get("cardId");
 
 	useEffect(() => {
 		async function loadCards() {
@@ -59,11 +56,7 @@ function RateCards() {
 						<div className="progress-fill" />
 					</div>
 				</div>
-				<CardList
-					cards={cardList}
-					onRateCard={handleRateCard}
-					initialCardId={cardIdParam || undefined}
-				/>
+				<CardList cards={cardList} onRateCard={handleRateCard} />
 			</div>
 		</div>
 	);

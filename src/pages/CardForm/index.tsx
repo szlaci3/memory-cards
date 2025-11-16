@@ -125,7 +125,7 @@ const CardForm = () => {
 							onChange={(e) => setCategory(e.target.value as CardCategory)}
 						>
 							<option value="EN to NL">EN to NL</option>
-							<option value="NL to EN">NL to EN</option>
+							<option value="Question NL">Question NL</option>
 							<option value="Dev">Dev</option>
 						</select>
 					</div>
