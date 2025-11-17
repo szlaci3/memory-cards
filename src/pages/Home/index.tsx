@@ -1,5 +1,5 @@
 import CardList from "components/CardList";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CardType } from "types/index";
 import { db, initializeDatabase } from "utils/db";
 
@@ -43,12 +43,12 @@ function RateCards() {
 		}
 	};
 
-	const getDueCount = () => {
+	const dueCount = useMemo(() => {
 		const now = Date.now();
 		return cardList.filter(
 			(card) => typeof card.dueAt === "number" && card.dueAt <= now,
 		).length;
-	};
+	}, [cardList]);
 
 	return (
 		<div className="app-container">
@@ -66,7 +66,7 @@ function RateCards() {
 				<div className="header">
 					<h1>Memory Card</h1>
 					<div className="streak">
-						<span>Due cards: {getDueCount()}</span>
+						<span>Due cards: {dueCount}</span>
 						<span>🔥🔥🔥</span>
 					</div>
 					<div className="progress-bar">
