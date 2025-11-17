@@ -21,7 +21,17 @@ function RateCards() {
 
 	const handleRateCard = async (card: CardType, rate: number) => {
 		try {
-			const updatedCard = { ...card, rate, reviewedAt: Date.now() };
+			const now = Date.now();
+			const dayInMs = 24 * 60 * 60 * 1000;
+			const minuteInMs = 60 * 1000;
+
+			// Calculate dueAt: rate 0 = 10 minutes, rate > 0 = n days
+			const dueAt =
+				rate === 0
+					? now + 10 * minuteInMs // 10 minutes
+					: now + rate * dayInMs; // n days
+
+			const updatedCard = { ...card, rate, dueAt };
 			await db.cards.update(card.id, updatedCard);
 			setCardList((prevList) =>
 				prevList.map((cardItem) =>
@@ -47,7 +57,7 @@ function RateCards() {
 
 			<div className="content">
 				<div className="header">
-					<h1>SmartAnki Pro</h1>
+					<h1>Memory Card</h1>
 					<div className="streak">
 						<span>Daily Streak: 42</span>
 						<span>🔥🔥🔥</span>

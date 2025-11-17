@@ -1,18 +1,9 @@
 export type CardCategory = "EN to NL" | "NL to EN" | "Question NL" | "Dev";
 
-interface BaseCard {
+export interface CardType {
 	id: string;
-	reviewedAt?: number | null;
-}
-
-export interface CardFromApi extends BaseCard {
-	sides: string; // JSON string from API
-	rate?: string | null;
-	category?: CardCategory;
-}
-
-export interface CardType extends BaseCard {
-	sides: string[]; // Parsed array
+	sides: string[];
+	dueAt?: number | null;
 	rate?: number | null;
 	category?: CardCategory;
 }

@@ -73,7 +73,7 @@ const CardForm = () => {
 					id: crypto.randomUUID(),
 					sides: updatedSides,
 					rate: null,
-					reviewedAt: null,
+					dueAt: null,
 					category,
 				};
 

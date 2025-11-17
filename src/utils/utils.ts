@@ -12,10 +12,10 @@ export const rand = (size: number, exclude: number | null = null) => {
 };
 
 /**
- * Selects the next card to review based on reviewedAt and rate properties.
+ * Selects the next card to review based on dueAt property.
  * Priority:
- * 1. Cards never reviewed (no reviewedAt or rate)
- * 2. Cards that are due for review (reviewedAt + rate days <= now)
+ * 1. Cards never reviewed (no dueAt)
+ * 2. Cards that are due for review (dueAt <= now)
  * 3. Cards with the earliest due date
  */
 export const selectNextCard = (
@@ -30,7 +30,6 @@ export const selectNextCard = (
 	}
 
 	const now = Date.now();
-	const dayInMs = 24 * 60 * 60 * 1000;
 
 	// Calculate priority score for each card
 	const cardScores = cards.map((card, index) => {
@@ -39,22 +38,19 @@ export const selectNextCard = (
 		}
 
 		// Never reviewed - highest priority
-		if (!card.reviewedAt || card.rate === null || card.rate === undefined) {
+		if (!card.dueAt) {
 			return { index, score: Infinity };
 		}
 
-		// Calculate due date: reviewedAt + (rate * days in ms)
-		const dueDate = card.reviewedAt + card.rate * dayInMs;
-		const isDue = dueDate <= now;
+		const isDue = card.dueAt <= now;
 
 		// Due cards get high priority (earlier due dates = higher priority)
-		if (isDue) {
-			// Use negative due date so earlier dates have higher scores
-			return { index, score: -dueDate };
-		}
-
-		// Not due yet - lower priority (earlier due dates still prioritized)
-		return { index, score: -dueDate };
+		// Use negative due date so earlier dates have higher scores
+		// Due cards are prioritized over future cards by adding a large offset
+		return { 
+			index, 
+			score: isDue ? -card.dueAt : -card.dueAt - 1000000000000 
+		};
 	});
 
 	// Sort by score (descending) and return the index of the highest scoring card

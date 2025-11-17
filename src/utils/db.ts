@@ -7,9 +7,27 @@ export class CardDatabase extends Dexie {
 
 	constructor() {
 		super("CardDatabase");
-		this.version(1).stores({
+
+		// Old schema
+		this.version(3).stores({
 			cards: "id, reviewedAt, rate",
 		});
+
+		// New schema
+		this.version(4)
+			.stores({
+				cards: "id, dueAt, rate",
+			})
+			.upgrade((tx) => {
+				// Safely remove reviewedAt from every card
+				return tx
+					.table("cards")
+					.toCollection()
+					.modify((card: CardType & { reviewedAt?: number }) => {
+						// biome-ignore lint/performance/noDelete: <explanation>
+						delete card.reviewedAt;
+					});
+			});
 	}
 }
 
