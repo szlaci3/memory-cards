@@ -43,6 +43,13 @@ function RateCards() {
 		}
 	};
 
+	const getDueCount = () => {
+		const now = Date.now();
+		return cardList.filter(
+			(card) => typeof card.dueAt === "number" && card.dueAt <= now,
+		).length;
+	};
+
 	return (
 		<div className="app-container">
 			<div className="background">
@@ -59,7 +66,7 @@ function RateCards() {
 				<div className="header">
 					<h1>Memory Card</h1>
 					<div className="streak">
-						<span>Daily Streak: 42</span>
+						<span>Due cards: {getDueCount()}</span>
 						<span>🔥🔥🔥</span>
 					</div>
 					<div className="progress-bar">

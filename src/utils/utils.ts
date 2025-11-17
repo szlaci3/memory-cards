@@ -1,16 +1,5 @@
 import type { CardType } from "types/index";
 
-export const rand = (size: number, exclude: number | null = null) => {
-	if (size === 1) {
-		return 0;
-	}
-	let result: number;
-	do {
-		result = Math.floor(Math.random() * size);
-	} while (result === exclude);
-	return result;
-};
-
 /**
  * Selects the next card to review based on dueAt property.
  * Priority:
@@ -47,9 +36,9 @@ export const selectNextCard = (
 		// Due cards get high priority (earlier due dates = higher priority)
 		// Use negative due date so earlier dates have higher scores
 		// Due cards are prioritized over future cards by adding a large offset
-		return { 
-			index, 
-			score: isDue ? -card.dueAt : -card.dueAt - 1000000000000 
+		return {
+			index,
+			score: isDue ? -card.dueAt : -card.dueAt - 1000000000000,
 		};
 	});
 
