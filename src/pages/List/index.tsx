@@ -84,6 +84,64 @@ function List() {
 		navigate(`/?cardId=${cardId}`);
 	};
 
+	const handleExportDB = async () => {
+		try {
+			const allCards = await db.cards.toArray();
+			const dataStr = JSON.stringify(allCards, null, 2);
+			const dataBlob = new Blob([dataStr], { type: "application/json" });
+			const url = URL.createObjectURL(dataBlob);
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = `card-database-backup-${new Date().toISOString().split("T")[0]}.json`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Error exporting database:", error);
+			alert("Failed to export database. Please try again.");
+		}
+	};
+
+	const handleImportDB = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (!file) return;
+
+		try {
+			const text = await file.text();
+			const importedCards: CardType[] = JSON.parse(text);
+
+			if (!Array.isArray(importedCards)) {
+				throw new Error("Invalid file format. Expected an array of cards.");
+			}
+
+			if (
+				!confirm(
+					`This will replace all existing cards with ${importedCards.length} cards from the backup. Are you sure?`,
+				)
+			) {
+				event.target.value = "";
+				return;
+			}
+
+			// Clear existing cards and import new ones
+			await db.cards.clear();
+			await db.cards.bulkAdd(importedCards);
+			const allCards = await db.cards.toArray();
+			setCards(allCards);
+
+			alert(`Successfully imported ${importedCards.length} cards!`);
+		} catch (error) {
+			console.error("Error importing database:", error);
+			alert(
+				"Failed to import database. Please make sure the file is a valid JSON backup.",
+			);
+		} finally {
+			// Reset the input so the same file can be selected again
+			event.target.value = "";
+		}
+	};
+
 	return (
 		<div className="app-container">
 			<div className="background">
@@ -114,6 +172,23 @@ function List() {
 						>
 							Delete All Cards
 						</button>
+						<button
+							type="button"
+							onClick={handleExportDB}
+							className="export-button"
+						>
+							Export DB
+						</button>
+						<label htmlFor="import-db-input" className="import-button">
+							Import DB
+							<input
+								id="import-db-input"
+								type="file"
+								accept=".json"
+								onChange={handleImportDB}
+								style={{ display: "none" }}
+							/>
+						</label>
 					</div>
 					<div className="card-count">
 						Showing {filteredCards.length} of {cards.length} cards
@@ -174,4 +249,3 @@ function List() {
 }
 
 export default List;
-

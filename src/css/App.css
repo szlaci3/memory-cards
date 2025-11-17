@@ -286,9 +286,13 @@ nav a {
 	flex-wrap: wrap;
 }
 
-.search-input {
+.list-controls > * {
 	flex: 1;
-	min-width: 200px;
+	white-space: nowrap;
+}
+
+.search-input {
+	min-width: 150px;
 	padding: 0.5rem 1rem;
 	border: 1px solid rgba(249, 115, 22, 0.3);
 	border-radius: 0.5rem;
@@ -310,6 +314,7 @@ nav a {
 }
 
 .delete-all-button {
+	flex: unset;
 	background: linear-gradient(135deg, #dc2626, #b91c1c);
 	color: white;
 	border: none;
@@ -322,6 +327,38 @@ nav a {
 
 .delete-all-button:hover {
 	background: linear-gradient(135deg, #b91c1c, #991b1b);
+}
+
+.export-button {
+	background: linear-gradient(135deg, #10b981, #059669);
+	color: white;
+	border: none;
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.export-button:hover {
+	background: linear-gradient(135deg, #059669, #047857);
+}
+
+.import-button {
+	background: linear-gradient(135deg, #3b82f6, #2563eb);
+	color: white;
+	border: none;
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s;
+	display: inline-block;
+	text-align: center;
+}
+
+.import-button:hover {
+	background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .card-count {
