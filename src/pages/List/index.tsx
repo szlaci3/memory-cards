@@ -35,17 +35,16 @@ function List() {
 		}
 	}, [searchQuery, cards]);
 
-	const formatRate = (rate: number | null | undefined): string => {
-		if (rate === null || rate === undefined) {
+	const formatDueAt = (dueAt: number | null | undefined): string => {
+		if (dueAt === null || dueAt === undefined) {
 			return "Not reviewed";
 		}
-		if (rate === 0) {
-			return "10 min";
-		}
-		if (rate === 1) {
-			return "1 day";
-		}
-		return `${rate} days`;
+		const date = new Date(dueAt);
+		const month = date.toLocaleString("en-US", { month: "short" });
+		const day = date.getDate();
+		const hours = date.getHours().toString().padStart(2, "0");
+		const minutes = date.getMinutes().toString().padStart(2, "0");
+		return `Due: ${month} ${day}, ${hours}:${minutes}`;
 	};
 
 	const handleDeleteAll = async () => {
@@ -221,7 +220,17 @@ function List() {
 									<div className="card-list-side">
 										{card.sides[0] || "Empty card"}
 									</div>
-									<div className="card-list-rate">{formatRate(card.rate)}</div>
+									<div
+										className={`card-list-due ${
+											card.dueAt !== null &&
+											card.dueAt !== undefined &&
+											card.dueAt < Date.now()
+												? "past"
+												: ""
+										}`}
+									>
+										{formatDueAt(card.dueAt)}
+									</div>
 								</div>
 								<div className="card-list-actions">
 									<button
