@@ -24,14 +24,15 @@ function List() {
 	}, []);
 
 	useEffect(() => {
+		// allow max 50 cards to show
 		if (searchQuery.trim() === "") {
-			setFilteredCards(cards);
+			setFilteredCards(cards.slice(0, 50));
 		} else {
 			const query = searchQuery.toLowerCase();
 			const filtered = cards.filter((card) =>
 				card.sides.some((side) => side.toLowerCase().includes(query)),
 			);
-			setFilteredCards(filtered);
+			setFilteredCards(filtered.slice(0, 50));
 		}
 	}, [searchQuery, cards]);
 
