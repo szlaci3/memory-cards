@@ -142,6 +142,66 @@ function List() {
 		}
 	};
 
+	const handleFastForward = async () => {
+		if (
+			!confirm(
+				"Are you sure you want to fast forward all cards by 1 day? This will make all cards due 1 day earlier.",
+			)
+		) {
+			return;
+		}
+
+		try {
+			const dayInMs = 24 * 60 * 60 * 1000;
+			const allCards = await db.cards.toArray();
+
+			// Update all cards that have a dueAt value
+			const updates = allCards
+				.filter((card) => card.dueAt !== null && card.dueAt !== undefined)
+				.map((card) => ({
+					...card,
+					dueAt: (card.dueAt as number) - dayInMs,
+				}));
+
+			await db.cards.bulkPut(updates);
+			const updatedCards = await db.cards.toArray();
+			setCards(updatedCards);
+		} catch (error) {
+			console.error("Error fast forwarding cards:", error);
+			alert("Failed to fast forward cards. Please try again.");
+		}
+	};
+
+	const handleSlowDown = async () => {
+		if (
+			!confirm(
+				"Are you sure you want to slow down all cards by 1 day? This will make all cards due 1 day later.",
+			)
+		) {
+			return;
+		}
+
+		try {
+			const dayInMs = 24 * 60 * 60 * 1000;
+			const allCards = await db.cards.toArray();
+
+			// Update all cards that have a dueAt value
+			const updates = allCards
+				.filter((card) => card.dueAt !== null && card.dueAt !== undefined)
+				.map((card) => ({
+					...card,
+					dueAt: (card.dueAt as number) + dayInMs,
+				}));
+
+			await db.cards.bulkPut(updates);
+			const updatedCards = await db.cards.toArray();
+			setCards(updatedCards);
+		} catch (error) {
+			console.error("Error slowing down cards:", error);
+			alert("Failed to slow down cards. Please try again.");
+		}
+	};
+
 	return (
 		<div className="app-container">
 			<div className="background">
@@ -165,6 +225,22 @@ function List() {
 							onChange={(e) => setSearchQuery(e.target.value)}
 							className="search-input"
 						/>
+						<button
+							type="button"
+							onClick={handleFastForward}
+							className="fast-forward-button"
+							title="Fast forward: Make all cards due 1 day earlier"
+						>
+							&gt;&gt;
+						</button>
+						<button
+							type="button"
+							onClick={handleSlowDown}
+							className="slow-down-button"
+							title="Slow down: Make all cards due 1 day later"
+						>
+							&lt;&lt;
+						</button>
 						<button
 							type="button"
 							onClick={handleDeleteAll}

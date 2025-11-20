@@ -331,7 +331,7 @@ nav a {
 }
 
 .export-button {
-	background: linear-gradient(135deg, #10b981, #059669);
+	background: linear-gradient(135deg, #3b82f6, #2563eb);
 	color: white;
 	border: none;
 	padding: 0.5rem 1rem;
@@ -342,7 +342,7 @@ nav a {
 }
 
 .export-button:hover {
-	background: linear-gradient(135deg, #059669, #047857);
+	background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .import-button {
@@ -360,6 +360,24 @@ nav a {
 
 .import-button:hover {
 	background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.fast-forward-button,
+.slow-down-button {
+	flex: 0;
+	background: linear-gradient(135deg, #10b981, #059669);
+	color: white;
+	border: none;
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.fast-forward-button:hover,
+.slow-down-button:hover {
+	background: linear-gradient(135deg, #059669, #047857);
 }
 
 .card-count {
