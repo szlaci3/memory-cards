@@ -299,9 +299,7 @@ function List() {
 									</div>
 									<div
 										className={`card-list-due ${
-											card.dueAt !== null &&
-											card.dueAt !== undefined &&
-											card.dueAt < Date.now()
+											card.dueAt != null && card.dueAt < Date.now()
 												? "past"
 												: ""
 										}`}
