@@ -30,13 +30,15 @@ function Card({
 		setRevealCount((prev) => prev + 1);
 	};
 
-	const handleRateCard = (rate: string) => {
-		onRateCard(rate === "" ? 1 : parseInt(rate));
+	const handleRateCard = (rate: string | number) => {
+		const numericRate =
+			typeof rate === "string" ? (rate === "" ? 1 : parseInt(rate)) : rate;
+		onRateCard(numericRate);
 		setRevealCount(0);
 	};
 
-	const onEditCard = (card: CardType) => {
-		navigate(`/cardForm/${card.id}`);
+	const onEditCard = (cardToEdit: CardType) => {
+		navigate(`/cardForm/${cardToEdit.id}`);
 	};
 
 	const option3 = card.rate === 0 ? 2 : card.rate || 2;
@@ -69,6 +71,13 @@ function Card({
 		onCategoryChange(newCategory);
 	};
 
+	const renderSide = (side: string, index: number) => (
+		// biome-ignore lint/suspicious/noArrayIndexKey: <Sides are static>
+		<div key={index} className="side">
+			<h2>{side}</h2>
+		</div>
+	);
+
 	return (
 		<div className="flashcard">
 			<div>
@@ -92,14 +101,7 @@ function Card({
 				</div>
 
 				<div className={`card-content ${isDevCategory ? "dev-content" : ""}`}>
-					{card.sides
-						.slice(0, revealCount + 1)
-						.map((side: string, index: number) => (
-							// biome-ignore lint/suspicious/noArrayIndexKey: <Sides are static>
-							<div key={index} className="side">
-								<h2>{side}</h2>
-							</div>
-						))}
+					{card.sides.slice(0, revealCount + 1).map(renderSide)}
 				</div>
 
 				<div className="controls">
@@ -115,7 +117,7 @@ function Card({
 
 					{revealCount > 0 && (
 						<div className="rating-buttons">
-							<button type="button" onClick={() => handleRateCard("0")}>
+							<button type="button" onClick={() => handleRateCard(0)}>
 								<div>10</div>
 								<div>min</div>
 							</button>
@@ -148,17 +150,11 @@ function Card({
 									</div>
 								</button>
 							</div>
-							<button
-								type="button"
-								onClick={() => handleRateCard(option3.toString())}
-							>
+							<button type="button" onClick={() => handleRateCard(option3)}>
 								<div>{option3}</div>
 								<div>day{option3 === 1 ? "" : "s"}</div>
 							</button>
-							<button
-								type="button"
-								onClick={() => handleRateCard(option4.toString())}
-							>
+							<button type="button" onClick={() => handleRateCard(option4)}>
 								<div>{option4}</div>
 								<div>days</div>
 							</button>

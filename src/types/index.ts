@@ -16,7 +16,7 @@ export interface CardProps {
 	onCategoryChange: (category: CardCategory) => void;
 }
 
-export interface CardListProps {
+export interface StudySessionProps {
 	cards: CardType[];
 	onRateCard: (card: CardType, rate: number) => void;
 }

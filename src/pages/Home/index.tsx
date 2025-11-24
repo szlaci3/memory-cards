@@ -1,4 +1,4 @@
-import CardList from "components/CardList";
+import CardList from "components/StudySession";
 import { useEffect, useMemo, useState } from "react";
 import type { CardType } from "types/index";
 import { db, initializeDatabase } from "utils/db";

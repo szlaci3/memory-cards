@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import type { CardCategory, CardListProps, CardType } from "src/types";
+import type { CardCategory, CardType, StudySessionProps } from "src/types";
 import { selectNextCard } from "utils/utils";
 import Card from "./Card";
 
-function CardList({ cards, onRateCard }: CardListProps) {
+function StudySession({ cards, onRateCard }: StudySessionProps) {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const initialCardId = searchParams.get("cardId") || undefined;
@@ -139,4 +139,4 @@ function CardList({ cards, onRateCard }: CardListProps) {
 	);
 }
 
-export default CardList;
+export default StudySession;
