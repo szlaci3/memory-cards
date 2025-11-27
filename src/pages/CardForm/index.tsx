@@ -155,6 +155,8 @@ const CardForm = () => {
 											id={`_${index}`}
 											className="side-input"
 											value={side}
+											autoCapitalize="none"
+											autoCorrect="off"
 											onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
 												handleSideChange(index, e.target.value)
 											}
