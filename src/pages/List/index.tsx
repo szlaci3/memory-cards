@@ -241,13 +241,13 @@ function List() {
 						>
 							&lt;&lt;
 						</button>
-						<button
+						{/* <button
 							type="button"
 							onClick={handleDeleteAll}
 							className="delete-all-button"
 						>
 							Delete All Cards
-						</button>
+						</button> */}
 						<button
 							type="button"
 							onClick={handleExportDB}
