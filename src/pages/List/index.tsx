@@ -48,20 +48,20 @@ function List() {
 		return `Due: ${month} ${day}, ${hours}:${minutes}`;
 	};
 
-	const handleDeleteAll = async () => {
-		if (
-			confirm(
-				"Are you sure you want to delete ALL cards? This action cannot be undone.",
-			)
-		) {
-			try {
-				await db.cards.clear();
-				setCards([]);
-			} catch (error) {
-				console.error("Error deleting all cards:", error);
-			}
-		}
-	};
+	// const handleDeleteAll = async () => {
+	// 	if (
+	// 		confirm(
+	// 			"Are you sure you want to delete ALL cards? This action cannot be undone.",
+	// 		)
+	// 	) {
+	// 		try {
+	// 			await db.cards.clear();
+	// 			setCards([]);
+	// 		} catch (error) {
+	// 			console.error("Error deleting all cards:", error);
+	// 		}
+	// 	}
+	// };
 
 	const handleEdit = (cardId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
