@@ -73,7 +73,7 @@ function Card({
 
 	const renderSide = (side: string, index: number) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <Sides are static>
-		<div key={index} className="side">
+		<div key={index} className={`side ${index > 0 ? "side-yellow" : ""}`}>
 			<h2>{side}</h2>
 		</div>
 	);

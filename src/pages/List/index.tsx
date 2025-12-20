@@ -218,13 +218,25 @@ function List() {
 				<div className="header">
 					<h1>Card List</h1>
 					<div className="list-controls">
-						<input
-							type="text"
-							placeholder="Search cards..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="search-input"
-						/>
+						<div className="search-wrapper">
+							<input
+								type="text"
+								placeholder="Search cards..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="search-input"
+							/>
+							{searchQuery && (
+								<button
+									type="button"
+									className="search-clear-btn"
+									onClick={() => setSearchQuery("")}
+									aria-label="Clear search"
+								>
+									✕
+								</button>
+							)}
+						</div>
 						<button
 							type="button"
 							onClick={handleFastForward}
