@@ -105,17 +105,10 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 						month: "short",
 						day: "numeric",
 					});
-					// Simple collision check logic could be added here, 
-                    // but for now we'll trust the user or just random/time based suffix if needed.
-                    // The prompt implies we generate it. Let's do a simple one.
-                    // A better approach would be checking DB, but let's stick to a simple generator for now
-                    // or maybe just random char if "A" is taken?
-                    // Let's implement a simple "A" default for now as per prompt request "Nov 12 A"
 					return `${dateStr} A`; 
 			  })();
 
-        // If collision check is strictly needed we'd need async check. 
-        // For this iteration, let's implement a basic generator that might need refinement:
+        // basic generator, might need refinement:
         let uniqueName = finalName;
         if (!groupId) {
              const existingGroups = await db.groups.toArray();
@@ -144,8 +137,22 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 			cardIds: Array.from(selectedCardIds),
 		};
 
+		setCardsToDueNow();
+
 		await db.groups.put(newGroup);
 		onSave(newGroup);
+	};
+
+	const setCardsToDueNow = async () => {
+		const cardsToUpdate = await db.cards.bulkGet(Array.from(selectedCardIds));
+		const now = Date.now();
+		const updates = cardsToUpdate
+			.filter((c): c is CardType => !!c)
+			.map((c) => ({ ...c, dueAt: now }));
+
+		if (updates.length > 0) {
+			await db.cards.bulkPut(updates);
+		}
 	};
 
 	return (
@@ -154,6 +161,9 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 				<button type="button" onClick={handleSave} className="save-group-btn">
 					{groupId ? "Update Group" : "Save Group"}
 				</button>
+				{groupId && <button type="button" onClick={setCardsToDueNow} className="set-cards-to-due-btn">
+					Set Cards to Due Now
+				</button>}
 			</div>
 			<div className="group-cards-list">
 				{cards.map((card) => {

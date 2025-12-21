@@ -115,7 +115,7 @@ nav a {
 	margin-bottom: 1rem;
 }
 
-.category-button {
+.category-button, .groups-selector {
 	background: linear-gradient(135deg, #f97316, #fbbf24);
 	color: white;
 	border: none;
@@ -142,12 +142,12 @@ nav a {
 	box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.5);
 }
 
-.category-button option {
+.category-button option, .groups-selector option {
 	background: #1a0f05;
 	color: white;
 }
 
-.category-button option:disabled {
+.category-button option:disabled, .groups-selector option:disabled {
 	color: #6b7280;
 	opacity: 0.5;
 }
@@ -517,4 +517,158 @@ nav a {
 /* Side colors */
 .side-yellow h2 {
     color: yellow;
+}
+
+/* Create Group */
+
+.group-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.group-card-item {
+    background-color: rgba(0, 0, 0, 0.15);
+    border: none;
+    box-shadow: 0 20px 25px -5px rgba(249, 115, 22, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 19px;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.group-card-item:hover {
+    background-color: rgba(249, 115, 22, 0.25);
+    transform: translateY(-2px);
+}
+
+.group-card-item:active {
+    transform: translateY(0);
+}
+
+.group-card-item.selected {
+    background-color: rgba(249, 115, 22, 0.25);
+}
+
+.group-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.group-card-side {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.group-card-side:nth-child(1) {
+    color: #b05617;
+}
+
+.group-card-side:nth-child(2) {
+    color: #a07a1c;
+}
+
+.group-card-item.selected .group-card-side:nth-child(1) {
+    color: #f97316;
+}
+
+.group-card-item.selected .group-card-side:nth-child(2) {
+    color: #fbbf24;
+}
+
+.group-card-due {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #7e7e7e;
+}
+
+.group-card-due.past {
+    color: #fbbf24;
+}
+
+.group-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    pointer-events: auto;
+}
+
+.remove-card-btn,
+.add-card-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+}
+
+.remove-card-btn {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.remove-card-btn:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+}
+
+.add-card-btn {
+	background: linear-gradient(135deg, #f97316, #fbbf24);
+}
+
+.add-card-btn:hover {
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+}
+
+.group-list-item {
+    background-color: #94949426;
+    border: none;
+    box-shadow: 0 20px 25px -5px rgba(249, 115, 22, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 19px;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.group-actions {
+    display: flex;
+    gap: 0.5rem;
+    pointer-events: auto;
+	
+}
+
+.create-group-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.app-container .groups-content .flashcard button {
+	background: linear-gradient(135deg, #a2544e, #f97316);
+}
+
+.delete-all-groups-btn, .group-actions > button, .save-group-btn, .set-cards-to-due-btn {
+	color: white;
 }
