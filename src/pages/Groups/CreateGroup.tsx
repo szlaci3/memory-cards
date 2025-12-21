@@ -9,6 +9,7 @@ interface CreateGroupProps {
 
 function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 	const [cards, setCards] = useState<CardType[]>([]);
+	const [hasPlusBeenClickedOnce, setHasPlusBeenClickedOnce] = useState(false);
 	const [selectedCardIds, setSelectedCardIds] = useState<Set<string>>(
 		new Set(),
 	);
@@ -59,21 +60,9 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 
 	const toggleCard = (clickedCardId: string) => {
 		const newSelected = new Set(selectedCardIds);
-
-		if (newSelected.has(clickedCardId)) {
-			// Deselect
-			newSelected.delete(clickedCardId);
-			// Auto-select another one if possible (first unselected)
-			const candidate = cards.find(
-				(c) => !newSelected.has(c.id) && c.id !== clickedCardId,
-			);
-			if (candidate) {
-				newSelected.add(candidate.id);
-			}
-		} else {
-			// Select
-			newSelected.add(clickedCardId);
-		}
+		// Select
+		newSelected.add(clickedCardId);
+		setHasPlusBeenClickedOnce(true);
 		setSelectedCardIds(newSelected);
 	};
 
@@ -87,7 +76,7 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 		newSelected.delete(cardId);
 
 		// If we removed a selected card, try to replace it
-		if (selectedCardIds.has(cardId)) {
+		if (selectedCardIds.has(cardId) && !hasPlusBeenClickedOnce) {
 			const candidate = newCards.find((c) => !newSelected.has(c.id));
 			if (candidate) {
 				newSelected.add(candidate.id);
