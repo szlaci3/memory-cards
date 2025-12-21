@@ -20,4 +20,8 @@ export const routes: Route[] = [
   {
     path: "/cardForm/:id",
   },
+  {
+    name: "Groups",
+    path: "/groups",
+  },
 ];

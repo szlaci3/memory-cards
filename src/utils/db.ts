@@ -1,9 +1,10 @@
 import Dexie, { type Table } from "dexie";
 import { coldStartCards } from "src/pages/Home/coldStartCards";
-import type { CardType } from "types/index";
+import type { CardType, GroupType } from "types/index";
 
 export class CardDatabase extends Dexie {
 	cards!: Table<CardType, string>;
+	groups!: Table<GroupType, string>;
 
 	constructor() {
 		super("CardDatabase");
@@ -28,6 +29,12 @@ export class CardDatabase extends Dexie {
 						delete card.reviewedAt;
 					});
 			});
+
+		// Schema with groups
+		this.version(5).stores({
+			cards: "id, dueAt, rate",
+			groups: "id, name",
+		});
 	}
 }
 

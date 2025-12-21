@@ -1,5 +1,12 @@
 export type CardCategory = "EN to NL" | "NL to EN" | "Question NL" | "Dev";
 
+
+export interface GroupType {
+	id: string;
+	cardIds: string[];
+	name: string;
+}
+
 export interface CardType {
 	id: string;
 	sides: string[];
