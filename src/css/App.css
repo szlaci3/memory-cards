@@ -222,6 +222,7 @@ nav a {
 	padding: 12px 3px 3px;
 	text-align: center;
 	z-index: 9;
+	font-size: 16px;
 }
 
 .rating-buttons > * {
