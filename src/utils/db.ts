@@ -35,6 +35,23 @@ export class CardDatabase extends Dexie {
 			cards: "id, dueAt, rate",
 			groups: "id, name",
 		});
+
+		// Migration: set dueAt to Infinity for rate 0
+		this.version(8)
+			.stores({
+				cards: "id, dueAt, rate",
+				groups: "id, name",
+			})
+			.upgrade((tx) => {
+				return tx
+					.table("cards")
+					.toCollection()
+					.modify((card: CardType) => {
+						if (card.rate === 0) {
+							card.dueAt = Infinity;
+						}
+					});
+			});
 	}
 }
 

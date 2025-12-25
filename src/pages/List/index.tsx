@@ -37,7 +37,7 @@ function List() {
 	}, [searchQuery, cards]);
 
 	const formatDueAt = (dueAt: number | null | undefined): string => {
-		if (dueAt === null || dueAt === undefined) {
+		if (dueAt === Infinity || dueAt === null || dueAt === undefined) {
 			return "Not reviewed";
 		}
 		const date = new Date(dueAt);
