@@ -9,8 +9,13 @@ interface EditGroupsProps {
 function EditGroups({ onEdit }: EditGroupsProps) {
 	const [groups, setGroups] = useState<GroupType[]>([]);
 
+	const [defaultGroupId, setDefaultGroupId] = useState<string | undefined>(undefined);
+
 	useEffect(() => {
 		db.groups.toArray().then(setGroups);
+		db.settings.get("global").then((settings) => {
+			setDefaultGroupId(settings?.defaultGroupId);
+		});
 	}, []);
 
 	const handleDelete = async (id: string) => {
@@ -38,8 +43,18 @@ function EditGroups({ onEdit }: EditGroupsProps) {
 			</button>
 			<div className="groups-list">
 				{groups.map((group) => (
-					<div key={group.id} className="group-list-item">
-						<span className="group-name">{group.name}</span>
+					<div
+						key={group.id}
+						className="group-list-item"
+						style={{
+							backgroundColor:
+								group.id === defaultGroupId ? "rgba(91, 77, 0, 0.3)" : undefined, // Slightly more yellow
+							border: group.id === defaultGroupId ? "1px solid rgba(91, 77, 0, 1)" : undefined,
+						}}
+					>
+						<span className="group-name">
+							{group.name} {group.id === defaultGroupId && "(Default)"}
+						</span>
 						<div className="group-actions">
 							<button type="button" onClick={() => onEdit(group.id)}>
 								Edit

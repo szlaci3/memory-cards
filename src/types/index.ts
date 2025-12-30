@@ -5,6 +5,13 @@ export interface GroupType {
 	id: string;
 	cardIds: string[];
 	name: string;
+	/** @deprecated Use settings for default group now */
+	isDefault?: boolean;
+}
+
+export interface SettingsType {
+	id: string;
+	defaultGroupId?: string;
 }
 
 export interface CardType {

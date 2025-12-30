@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import type { CardType } from "types/index";
-import { db, initializeDatabase } from "utils/db";
+import { addToDefaultGroup, db, initializeDatabase } from "utils/db";
 import "css/App.css";
 
 function List() {
@@ -78,6 +78,12 @@ function List() {
 				console.error("Error deleting card:", error);
 			}
 		}
+	};
+
+	const handleAddToDefaultGroup = async (cardId: string, e: React.MouseEvent) => {
+		e.stopPropagation();
+		const result = await addToDefaultGroup(cardId);
+		alert(result.message);
 	};
 
 	const handleCardClick = (cardId: string) => {
@@ -320,6 +326,15 @@ function List() {
 									</div>
 								</div>
 								<div className="card-list-actions">
+									<button
+										type="button"
+										onClick={(e) => handleAddToDefaultGroup(card.id, e)}
+										className="add-to-default-btn"
+										title="Add to Default Group"
+										style={{ marginRight: "5px", cursor: "pointer" }}
+									>
+										★
+									</button>
 									<button
 										type="button"
 										onClick={(e) => handleEdit(card.id, e)}

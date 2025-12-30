@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import type { CardCategory, CardProps, CardType } from "types/index";
+import { addToDefaultGroup } from "utils/db";
 
 function Card({
 	card,
@@ -167,9 +168,22 @@ function Card({
 						))}
 					</div>
 
-					<button type="button" onClick={() => onEditCard(card)}>
-						Edit
-					</button>
+					<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
+						<button
+							type="button"
+							onClick={async () => {
+								const result = await addToDefaultGroup(card.id);
+								alert(result.message);
+							}}
+							className="add-to-default-btn"
+							style={{ padding: "8px 16px" }}
+						>
+							Add to Default
+						</button>
+						<button type="button" onClick={() => onEditCard(card)}>
+							Edit
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

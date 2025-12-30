@@ -1,10 +1,11 @@
 import Dexie, { type Table } from "dexie";
 import { coldStartCards } from "src/pages/Home/coldStartCards";
-import type { CardType, GroupType } from "types/index";
+import type { CardType, GroupType, SettingsType } from "types/index";
 
 export class CardDatabase extends Dexie {
 	cards!: Table<CardType, string>;
 	groups!: Table<GroupType, string>;
+	settings!: Table<SettingsType, string>;
 
 	constructor() {
 		super("CardDatabase");
@@ -52,6 +53,52 @@ export class CardDatabase extends Dexie {
 						}
 					});
 			});
+
+		// Version 9: Add isDefault to groups
+		this.version(9).stores({
+			cards: "id, dueAt, rate",
+			groups: "id, name, isDefault",
+		});
+
+		// Version 10: Initialize isDefault to false for existing groups
+		this.version(10)
+			.stores({
+				cards: "id, dueAt, rate",
+				groups: "id, name, isDefault",
+			})
+			.upgrade((tx) => {
+				return tx
+					.table("groups")
+					.toCollection()
+					.modify((group: GroupType) => {
+						group.isDefault = false; // Initial value
+					});
+			});
+
+		// Version 11: Add settings table and move default group to settings
+		this.version(11)
+			.stores({
+				cards: "id, dueAt, rate",
+				groups: "id, name", // Removed isDefault from schema definition, though it might persist in objects until cleaned
+				settings: "id",
+			})
+			.upgrade(async (tx) => {
+				// Find the group that was default
+				const defaultGroup = await tx
+					.table("groups")
+					.filter((g) => !!g.isDefault)
+					.first();
+
+				if (defaultGroup) {
+					await tx.table("settings").put({
+						id: "global",
+						defaultGroupId: defaultGroup.id,
+					});
+				}
+				
+				// Optional: Remove isDefault from groups? 
+				// For now keeping it simple, new writes won't have it, old reads might ignore it.
+			});
 	}
 }
 
@@ -62,5 +109,33 @@ export async function initializeDatabase() {
 	const count = await db.cards.count();
 	if (count === 0) {
 		await db.cards.bulkAdd(coldStartCards);
+	}
+}
+
+export async function addToDefaultGroup(cardId: string): Promise<{ success: boolean; message: string }> {
+	try {
+		const settings = await db.settings.get("global");
+		const defaultGroupId = settings?.defaultGroupId;
+
+		if (!defaultGroupId) {
+			return { success: false, message: "No default group set." };
+		}
+
+		const defaultGroup = await db.groups.get(defaultGroupId);
+
+		if (!defaultGroup) {
+			return { success: false, message: "Default group not found (maybe deleted)." };
+		}
+
+		if (defaultGroup.cardIds.includes(cardId)) {
+			return { success: true, message: "Card already in default group." };
+		}
+
+		defaultGroup.cardIds.push(cardId);
+		await db.groups.put(defaultGroup);
+		return { success: true, message: `Added to default group: "${defaultGroup.name}"` };
+	} catch (error) {
+		console.error("Error adding to default group:", error);
+		return { success: false, message: "Failed to add to default group." };
 	}
 }

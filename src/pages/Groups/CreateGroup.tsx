@@ -14,6 +14,7 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 		new Set(),
 	);
 	const [groupName, setGroupName] = useState<string>("");
+	const [isDefault, setIsDefault] = useState(false);
 
 	useEffect(() => {
 		async function loadData() {
@@ -22,6 +23,8 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 				const group = await db.groups.get(groupId);
 				if (group) {
 					setGroupName(group.name);
+					const settings = await db.settings.get("global");
+					setIsDefault(settings?.defaultGroupId === group.id);
 					setSelectedCardIds(new Set(group.cardIds));
 
 					// Load selected cards + up to 50 rate 0 cards
@@ -108,11 +111,27 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 			id: groupId || crypto.randomUUID(),
 			name: uniqueName,
 			cardIds: Array.from(selectedCardIds),
+			// isDefault removed
 		};
 
 		setCardsToDueNow();
 
 		await db.groups.put(newGroup);
+
+		// Update settings
+		if (isDefault) {
+			await db.settings.put({ id: "global", defaultGroupId: newGroup.id });
+		} else {
+			// If we are unchecking it, and it WAS the default, we should unset it?
+			// Or just leave it? The UI implies "Make this the default".
+			// If I uncheck it, I probably mean "This is no longer default".
+			// Check if this group was the default
+			const settings = await db.settings.get("global");
+			if (settings?.defaultGroupId === newGroup.id) {
+				await db.settings.put({ id: "global", defaultGroupId: undefined });
+			}
+		}
+
 		onSave(newGroup);
 	};
 
@@ -137,6 +156,15 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 				{groupId && <button type="button" onClick={setCardsToDueNow} className="set-cards-to-due-btn">
 					Set Cards to Due Now
 				</button>}
+				<label className="checkbox-label" style={{ display: "flex", alignItems: "center", marginLeft: "10px", color: "white" }}>
+					<input
+						type="checkbox"
+						checked={isDefault}
+						onChange={(e) => setIsDefault(e.target.checked)}
+						style={{ marginRight: "5px" }}
+					/>
+					Default Group
+				</label>
 			</div>
 			<div className="group-cards-list">
 				{cards.map((card) => {
