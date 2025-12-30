@@ -26,9 +26,9 @@ export const selectNextCard = (
 			return { index, score: -Infinity }; // Exclude this card
 		}
 
-		// Never reviewed - highest priority
+		// Never reviewed - lowest priority
 		if (!card.dueAt) {
-			return { index, score: Infinity };
+			return { index, score: -now - 864000000 };// cca 10 days
 		}
 
 		const isDue = card.dueAt <= now;
@@ -38,7 +38,7 @@ export const selectNextCard = (
 		// Due cards are prioritized over future cards by adding a large offset
 		return {
 			index,
-			score: isDue ? -card.dueAt : -card.dueAt - 1000000000000,
+			score: isDue ? -card.dueAt : -card.dueAt - 432000000,// cca 5 days
 		};
 	});
 

@@ -1,4 +1,4 @@
-import CardList from "components/StudySession";
+import StudySession from "components/StudySession";
 import { useEffect, useMemo, useState } from "react";
 import type { CardType } from "types/index";
 import { db, initializeDatabase } from "utils/db";
@@ -73,7 +73,7 @@ function RateCards() {
 						<div className="progress-fill" />
 					</div>
 				</div>
-				<CardList cards={cardList} onRateCard={handleRateCard} />
+				<StudySession cards={cardList} onRateCard={handleRateCard} />
 			</div>
 		</div>
 	);

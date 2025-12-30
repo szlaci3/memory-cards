@@ -58,7 +58,7 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 		loadData();
 	}, [groupId]);
 
-	const toggleCard = (clickedCardId: string) => {
+	const addCard = (clickedCardId: string) => {
 		const newSelected = new Set(selectedCardIds);
 		// Select
 		newSelected.add(clickedCardId);
@@ -85,40 +85,24 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 		setSelectedCardIds(newSelected);
 	};
 
+	const makeNameFromWord = () => {
+		const expression = cards.find((c) => c.id === selectedCardIds.values().next().value)?.sides[0];
+		if (!expression) return "A";	
+		const [firstWord, secondWord] = expression.split(" ");
+		return secondWord ?? firstWord;
+	}
+	
 	const handleSave = async () => {
-		const finalName = groupId
+		const uniqueName = groupId
 			? groupName
 			: (() => {
-					// Generate name: Nov 12 A, B, etc.
+					// Generate name: Nov 12 <engWord>, etc.
 					const dateStr = new Date().toLocaleString("en-US", {
 						month: "short",
 						day: "numeric",
 					});
-					return `${dateStr} A`; 
+					return `${dateStr} ${makeNameFromWord()}`; 
 			  })();
-
-        // basic generator, might need refinement:
-        let uniqueName = finalName;
-        if (!groupId) {
-             const existingGroups = await db.groups.toArray();
-             const dateBase = new Date().toLocaleString("en-US", { month: "short", day: "numeric" });
-             const pattern = new RegExp(`^${dateBase} ([A-Z])$`);
-             
-             const usedSuffixes = existingGroups
-                .map(g => {
-                    const match = g.name.match(pattern);
-                    return match ? match[1] : null;
-                })
-                .filter(Boolean);
-            
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            for (const char of alphabet) {
-                if (!usedSuffixes.includes(char)) {
-                    uniqueName = `${dateBase} ${char}`;
-                    break;
-                }
-            }
-        }
 
 		const newGroup: GroupType = {
 			id: groupId || crypto.randomUUID(),
@@ -177,7 +161,7 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 									<button
 										type="button"
 										className="add-card-btn"
-										onClick={() => toggleCard(card.id)}
+										onClick={() => addCard(card.id)}
 									>
 										+
 									</button>
