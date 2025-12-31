@@ -176,7 +176,7 @@ function Card({
 								alert(result.message);
 							}}
 							className="add-to-default-btn"
-							style={{ padding: "8px 16px" }}
+							style={{ padding: "8px 16px", color: "white" }}
 						>
 							Add to Default
 						</button>

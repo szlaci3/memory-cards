@@ -2,7 +2,7 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import type { CardCategory, CardType } from "types/index";
 import "css/form.css";
 import { useNavigate, useParams } from "react-router";
-import { db, initializeDatabase } from "utils/db";
+import { db, initializeDatabase, addToDefaultGroup } from "utils/db";
 
 const CardForm = () => {
 	const [sides, setSides] = useState<string[]>(["", ""]);
@@ -10,6 +10,7 @@ const CardForm = () => {
 	const [card, setCard] = useState<CardType | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [addToDefault, setAddToDefault] = useState<boolean>(false);
 
 	const { id } = useParams(); // Get the card ID from the URL
 	const navigate = useNavigate();
@@ -78,6 +79,13 @@ const CardForm = () => {
 				};
 
 				await db.cards.add(newCard);
+
+				if (addToDefault) {
+					const result = await addToDefaultGroup(newCard.id);
+					if (!result.success) {
+						console.warn("Failed to add to default group:", result.message);
+					}
+				}
 			} else {
 				// Update existing card
 				await db.cards.update(card.id, {
@@ -168,6 +176,27 @@ const CardForm = () => {
 					</div>
 
 					<div className="button-group">
+						{!card && (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+									color: "white",
+								}}
+							>
+								<input
+									type="checkbox"
+									id="addToDefault"
+									checked={addToDefault}
+									onChange={(e) => setAddToDefault(e.target.checked)}
+									style={{ width: "20px", height: "20px" }}
+								/>
+								<label htmlFor="addToDefault" style={{ cursor: "pointer" }}>
+									Add to group
+								</label>
+							</div>
+						)}
 						<button
 							className="action-button"
 							type="button"

@@ -122,10 +122,7 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 		if (isDefault) {
 			await db.settings.put({ id: "global", defaultGroupId: newGroup.id });
 		} else {
-			// If we are unchecking it, and it WAS the default, we should unset it?
-			// Or just leave it? The UI implies "Make this the default".
-			// If I uncheck it, I probably mean "This is no longer default".
-			// Check if this group was the default
+			// If we are unchecking it, and it WAS the default, we should unset it.
 			const settings = await db.settings.get("global");
 			if (settings?.defaultGroupId === newGroup.id) {
 				await db.settings.put({ id: "global", defaultGroupId: undefined });

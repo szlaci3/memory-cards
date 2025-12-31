@@ -48,12 +48,12 @@ function EditGroups({ onEdit }: EditGroupsProps) {
 						className="group-list-item"
 						style={{
 							backgroundColor:
-								group.id === defaultGroupId ? "rgba(91, 77, 0, 0.3)" : undefined, // Slightly more yellow
-							border: group.id === defaultGroupId ? "1px solid rgba(91, 77, 0, 1)" : undefined,
+								group.id === defaultGroupId ? "rgba(171, 145, 0, 0.3)" : undefined,
+							border: group.id === defaultGroupId ? "1px solid rgba(171, 145, 0, 1)" : undefined,
 						}}
 					>
 						<span className="group-name">
-							{group.name} {group.id === defaultGroupId && "(Default)"}
+							{group.name} ({group.cardIds.length})
 						</span>
 						<div className="group-actions">
 							<button type="button" onClick={() => onEdit(group.id)}>
