@@ -123,20 +123,19 @@ function List() {
 
 			if (
 				!confirm(
-					`This will replace all existing cards with ${importedCards.length} cards from the backup. Are you sure?`,
+					`This will add/update ${importedCards.length} cards from the uploaded file to your existing collection. Are you sure?`,
 				)
 			) {
 				event.target.value = "";
 				return;
 			}
 
-			// Clear existing cards and import new ones
-			await db.cards.clear();
-			await db.cards.bulkAdd(importedCards);
+			// Add or update cards from import
+			await db.cards.bulkPut(importedCards);
 			const allCards = await db.cards.toArray();
 			setCards(allCards);
 
-			alert(`Successfully imported ${importedCards.length} cards!`);
+			alert(`Successfully added/updated ${importedCards.length} cards!`);
 		} catch (error) {
 			console.error("Error importing database:", error);
 			alert(
@@ -274,7 +273,7 @@ function List() {
 							Export DB
 						</button>
 						<label htmlFor="import-db-input" className="import-button">
-							Import DB
+							Add to DB
 							<input
 								id="import-db-input"
 								type="file"
