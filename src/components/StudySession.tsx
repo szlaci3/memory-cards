@@ -100,6 +100,16 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 		setSelectedCategory(category);
 	};
 
+
+	const goToNextCard = () => {
+		setCurrentCardIndex((prev) => selectNextCard(filteredCards, prev));
+
+		// Remove initialCardId from URL after rating if it exists
+		if (initialCardId) {
+			navigate("/", { replace: true });
+		}
+	};
+	
 	const handleRateCard = (rating: number) => {
 		if (currentCardIndex >= 0 && currentCardIndex < filteredCards.length) {
 			const displayedCard = filteredCards[currentCardIndex];
@@ -110,12 +120,7 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 					? cards.find((c) => c.id === displayedCard.id) || displayedCard
 					: displayedCard;
 			onRateCard(cardToRate, rating);
-			setCurrentCardIndex((prev) => selectNextCard(filteredCards, prev));
-
-			// Remove initialCardId from URL after rating if it exists
-			if (initialCardId) {
-				navigate("/", { replace: true });
-			}
+			goToNextCard();
 		}
 	};
 
@@ -130,6 +135,7 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 				<Card
 					card={currentCard}
 					onRateCard={handleRateCard}
+					goToNextCard={goToNextCard}
 					allCards={cards}
 					selectedCategory={selectedCategory}
 					onCategoryChange={handleCategoryChange}
