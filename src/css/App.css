@@ -673,3 +673,8 @@ nav a {
 .delete-all-groups-btn, .group-actions > button, .save-group-btn, .set-cards-to-due-btn {
 	color: white;
 }
+
+.winter {
+	color: white;
+	background-color: #1a1a1a;
+}

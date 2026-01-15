@@ -147,10 +147,10 @@ function CreateGroup({ groupId, onSave }: CreateGroupProps) {
 	return (
 		<div className="create-group-container">
 			<div className="create-group-header">
-				<button type="button" onClick={handleSave} className="save-group-btn">
+				<button type="button" onClick={handleSave} className="save-group-btn winter">
 					{groupId ? "Update Group" : "Save Group"}
 				</button>
-				{groupId && <button type="button" onClick={setCardsToDueNow} className="set-cards-to-due-btn">
+				{groupId && <button type="button" onClick={setCardsToDueNow} className="set-cards-to-due-btn winter">
 					Set Cards to Due Now
 				</button>}
 				<label className="checkbox-label" style={{ display: "flex", alignItems: "center", marginLeft: "10px", color: "white" }}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { GroupType } from "types/index";
+import type { CardType, GroupType } from "types/index";
 import { db } from "utils/db";
 
 interface EditGroupsProps {
@@ -32,14 +32,50 @@ function EditGroups({ onEdit }: EditGroupsProps) {
 		}
 	};
 
+	const handleSetAllGroupsDueNow = async () => {
+		if (
+			confirm(
+				"Are you sure you want to set ALL cards in these groups to be due now?",
+			)
+		) {
+			const allCardIds = new Set<string>();
+			for (const group of groups) {
+				for (const cardId of group.cardIds) {
+					allCardIds.add(cardId);
+				}
+			}
+
+			const cardsToUpdate = await db.cards.bulkGet(Array.from(allCardIds));
+			const now = Date.now();
+			const updates = cardsToUpdate
+				.filter((c): c is CardType => !!c)
+				.map((c) => ({ ...c, dueAt: now }));
+
+			if (updates.length > 0) {
+				await db.cards.bulkPut(updates);
+				alert(`Updated ${updates.length} cards to be due now.`);
+			} else {
+				alert("No cards found in groups to update.");
+			}
+		}
+	};
+
 	return (
 		<div className="edit-groups-container">
 			<button
 				type="button"
 				onClick={handleDeleteAll}
-				className="delete-all-groups-btn"
+				className="delete-all-groups-btn winter"
 			>
 				Delete All Groups
+			</button>
+			<button
+				type="button"
+				onClick={handleSetAllGroupsDueNow}
+				className="set-all-due-btn winter"
+				style={{ marginLeft: "10px" }}
+			>
+				Set All to Due Now
 			</button>
 			<div className="groups-list">
 				{groups.map((group) => (
@@ -56,10 +92,10 @@ function EditGroups({ onEdit }: EditGroupsProps) {
 							{group.name} ({group.cardIds.length})
 						</span>
 						<div className="group-actions">
-							<button type="button" onClick={() => onEdit(group.id)}>
+							<button type="button" className="winter" onClick={() => onEdit(group.id)}>
 								Edit
 							</button>
-							<button type="button" onClick={() => handleDelete(group.id)}>
+							<button type="button" className="delete-button" onClick={() => handleDelete(group.id)}>
 								Delete
 							</button>
 						</div>

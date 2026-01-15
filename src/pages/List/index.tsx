@@ -328,7 +328,7 @@ function List() {
 									<button
 										type="button"
 										onClick={(e) => handleAddToDefaultGroup(card.id, e)}
-										className="add-to-default-btn"
+										className="add-to-default-btn winter"
 										title="Add to Default Group"
 										style={{ marginRight: "5px", cursor: "pointer" }}
 									>

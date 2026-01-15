@@ -119,7 +119,7 @@ function Card({
 						</button>
 					)}
 
-					{revealCount > 0 && card.category !== "NL to EN" && (
+					{revealCount > 0 && selectedCategory !== "NL to EN" && (
 						<div className="rating-buttons">
 							<button type="button" onClick={() => handleRateCard(0)}>
 								<div>10</div>
@@ -165,7 +165,7 @@ function Card({
 						</div>
 					)}
 
-					{revealCount > 0 && card.category === "NL to EN" && (
+					{revealCount > 0 && selectedCategory === "NL to EN" && (
 						<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
 							<button type="button" onClick={goToNextCard}>
 								Next
@@ -186,7 +186,7 @@ function Card({
 								const result = await addToDefaultGroup(card.id);
 								alert(result.message);
 							}}
-							className="add-to-default-btn"
+							className="add-to-default-btn winter"
 							style={{ padding: "8px 16px", color: "white" }}
 						>
 							Add to Default
