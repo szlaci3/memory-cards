@@ -44,13 +44,8 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 			for (const card of cards) {
 				categoriesWithCards.add(card.category || "EN to NL");
 			}
-			// If there are "EN to NL" cards, "NL to EN" should be available
-			if (categoriesWithCards.has("EN to NL")) {
-				categoriesWithCards.add("NL to EN");
-			}
 			const allCategories: CardCategory[] = [
 				"EN to NL",
-				"NL to EN",
 				"Question NL",
 				"Dev",
 			];
@@ -69,8 +64,6 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 			const card = cards.find((c) => c.id === initialCardId);
 			if (card) {
 				// Set the category to match the card's category
-				// If card is "EN to NL", we could show it in "NL to EN" mode, but for now
-				// we'll show it in its original category
 				setSelectedCategory(card.category || "EN to NL");
 			}
 		}
@@ -112,13 +105,7 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 	
 	const handleRateCard = (rating: number) => {
 		if (currentCardIndex >= 0 && currentCardIndex < filteredCards.length) {
-			const displayedCard = filteredCards[currentCardIndex];
-			// If we're in "NL to EN" mode, find the original card to rate
-			// (the displayed card has inverted sides, but we need to rate the original)
-			const cardToRate =
-				selectedCategory === "NL to EN"
-					? cards.find((c) => c.id === displayedCard.id) || displayedCard
-					: displayedCard;
+			const cardToRate = filteredCards[currentCardIndex];
 			onRateCard(cardToRate, rating);
 			goToNextCard();
 		}
