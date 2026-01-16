@@ -6,7 +6,6 @@ import { addToDefaultGroup } from "utils/db";
 function Card({
 	card,
 	onRateCard,
-	goToNextCard,
 	allCards,
 	selectedCategory,
 	onCategoryChange,
@@ -119,7 +118,7 @@ function Card({
 						</button>
 					)}
 
-					{revealCount > 0 && selectedCategory !== "NL to EN" && (
+					{revealCount > 0 && (
 						<div className="rating-buttons">
 							<button type="button" onClick={() => handleRateCard(0)}>
 								<div>10</div>
@@ -161,14 +160,6 @@ function Card({
 							<button type="button" onClick={() => handleRateCard(option4)}>
 								<div>{option4}</div>
 								<div>days</div>
-							</button>
-						</div>
-					)}
-
-					{revealCount > 0 && selectedCategory === "NL to EN" && (
-						<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
-							<button type="button" onClick={goToNextCard}>
-								Next
 							</button>
 						</div>
 					)}

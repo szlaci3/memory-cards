@@ -135,7 +135,6 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 				<Card
 					card={currentCard}
 					onRateCard={handleRateCard}
-					goToNextCard={goToNextCard}
 					allCards={cards}
 					selectedCategory={selectedCategory}
 					onCategoryChange={handleCategoryChange}

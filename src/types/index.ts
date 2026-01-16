@@ -25,7 +25,6 @@ export interface CardType {
 export interface CardProps {
 	card: CardType;
 	onRateCard: (rate: number) => void;
-	goToNextCard: () => void;
 	allCards: CardType[];
 	selectedCategory: CardCategory;
 	onCategoryChange: (category: CardCategory) => void;
