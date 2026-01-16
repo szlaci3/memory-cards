@@ -6,15 +6,19 @@ export interface Route {
 
 export const routes: Route[] = [
   {
-    name: "Review Cards",
+    name: "Review",
     path: "/",
   },
+  // {
+  //   name: "Inverse",
+  //   path: "/inverse",
+  // },
   {
     name: "List",
     path: "/list",
   },
   {
-    name: "Card Form",
+    name: "Add",
     path: "/cardForm",
   },
   {
@@ -23,5 +27,9 @@ export const routes: Route[] = [
   {
     name: "Groups",
     path: "/groups",
+  },
+  {
+    name: "Direct",
+    path: "/direct",
   },
 ];

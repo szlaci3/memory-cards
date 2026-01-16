@@ -63,7 +63,6 @@ function StudyByGroup({ group }: StudyByGroupProps) {
 	return (
 		<div className="study-group-container">
 			<div className="header">
-				<h1>{group.name}</h1>
 				<div className="streak">
 					<span>Due cards: {dueCount}</span>
 					<span>🔥🔥🔥</span>

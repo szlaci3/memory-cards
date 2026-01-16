@@ -5,6 +5,7 @@ import CardForm from "./pages/CardForm";
 import Groups from "./pages/Groups";
 import Home from "./pages/Home";
 import List from "./pages/List";
+import Direct from "./pages/Direct";
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 				<Route path="/cardForm" element={<CardForm />} />
 				<Route path="/cardForm/:id" element={<CardForm />} />
 				<Route path="/groups" element={<Groups />} />
+				<Route path="/direct" element={<Direct />} />
 			</Routes>
 		</BrowserRouter>
 	);

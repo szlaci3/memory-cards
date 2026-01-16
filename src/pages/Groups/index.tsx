@@ -62,7 +62,6 @@ function Groups() {
 			</div>
 			<div className="content">
 				<div className="header">
-					<h1>Groups</h1>
 					<div className="groups-nav">
 						<select
 							className="groups-selector"
