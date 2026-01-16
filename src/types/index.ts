@@ -1,4 +1,4 @@
-export type CardCategory = "EN to NL" | "NL to EN" | "Question NL" | "Dev";
+export type CardCategory = "EN to NL" | "Question NL" | "Dev";
 
 
 export interface GroupType {

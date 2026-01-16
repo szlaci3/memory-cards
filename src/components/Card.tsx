@@ -51,19 +51,13 @@ function Card({
 	const isDevCategory = category === "Dev";
 
 	// Check which categories have cards
-	// For "NL to EN", check if there are any "EN to NL" cards
 	const categoriesWithCards: Set<CardCategory> = new Set();
 	for (const c of allCards) {
 		categoriesWithCards.add(c.category || "EN to NL");
 	}
-	// If there are "EN to NL" cards, "NL to EN" should be available
-	if (categoriesWithCards.has("EN to NL")) {
-		categoriesWithCards.add("NL to EN");
-	}
 
 	const allCategories: CardCategory[] = [
 		"EN to NL",
-		"NL to EN",
 		"Question NL",
 		"Dev",
 	];
