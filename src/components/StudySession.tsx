@@ -15,26 +15,9 @@ function StudySession({ cards, onRateCard }: StudySessionProps) {
 
 	// Filter cards by category
 	useEffect(() => {
-		let filtered: CardType[];
-
-		if (selectedCategory === "NL to EN") {
-			// For "NL to EN", show "EN to NL" cards with inverted sides
-			const enToNlCards = cards.filter(
-				(card) => (card.category || "EN to NL") === "EN to NL",
-			);
-			// Create inverted versions: swap sides[0] and sides[1], keep rest the same
-			filtered = enToNlCards.map((card) => ({
-				...card,
-				sides:
-					card.sides.length >= 2
-						? [card.sides[1], card.sides[0], ...card.sides.slice(2)]
-						: card.sides,
-			}));
-		} else {
-			filtered = cards.filter(
-				(card) => (card.category || "EN to NL") === selectedCategory,
-			);
-		}
+		const filtered: CardType[] = cards.filter(
+			(card) => (card.category || "EN to NL") === selectedCategory,
+		);
 
 		setFilteredCards(filtered);
 

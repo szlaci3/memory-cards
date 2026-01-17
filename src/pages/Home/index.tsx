@@ -94,12 +94,11 @@ function Home() {
 					? now + 10 * minuteInMs
 					: now + rate * dayInMs;
 
-			const updatedCard = { ...card, rate, dueAt };
-			await db.cards.update(card.id, updatedCard);
+			await db.cards.update(card.id, { rate, dueAt });
             
             // Update allCards to reflect change
             setAllCards((prev) => 
-                prev.map((c) => c.id === card.id ? updatedCard : c)
+                prev.map((c) => c.id === card.id ? { ...card, rate, dueAt } : c)
             );
 		} catch (error) {
 			console.error("Error updating flashcard:", error);

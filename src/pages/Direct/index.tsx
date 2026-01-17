@@ -31,11 +31,10 @@ function RateCards() {
 					? now + 10 * minuteInMs // 10 minutes
 					: now + rate * dayInMs; // n days
 
-			const updatedCard = { ...card, rate, dueAt };
-			await db.cards.update(card.id, updatedCard);
+			await db.cards.update(card.id, { rate, dueAt });
 			setCardList((prevList) =>
 				prevList.map((cardItem) =>
-					card.id === cardItem.id ? updatedCard : cardItem,
+					card.id === cardItem.id ? { ...card, rate, dueAt } : cardItem,
 				),
 			);
 		} catch (error) {

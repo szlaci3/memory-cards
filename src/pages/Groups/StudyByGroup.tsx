@@ -1,4 +1,4 @@
-import StudySession from "components/StudySession";
+import Review from "components/Review";
 import { useEffect, useMemo, useState } from "react";
 import type { CardType, GroupType } from "types/index";
 import { db } from "utils/db";
@@ -41,13 +41,7 @@ function StudyByGroup({ group }: StudyByGroupProps) {
 					? now + 10 * minuteInMs // 10 minutes
 					: now + rate * dayInMs; // n days
 
-			const updatedCard = { ...card, rate, dueAt };
-			await db.cards.update(card.id, updatedCard);
-			setCardList((prevList) =>
-				prevList.map((cardItem) =>
-					card.id === cardItem.id ? updatedCard : cardItem,
-				),
-			);
+			await db.cards.update(card.id, { rate, dueAt });
 		} catch (error) {
 			console.error("Error updating flashcard:", error);
 		}
@@ -72,7 +66,12 @@ function StudyByGroup({ group }: StudyByGroupProps) {
 				</div>
 			</div>
 			{cardList.length > 0 ? (
-				<StudySession cards={cardList} onRateCard={handleRateCard} />
+				<Review 
+                    cards={cardList} 
+                    setCards={setCardList} 
+                    onRateCard={handleRateCard} 
+                    onClearUrl={() => {}} 
+                />
 			) : (
 				<div className="empty-group-message">
 					<p>No cards in this group.</p>

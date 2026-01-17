@@ -9,10 +9,10 @@ export const routes: Route[] = [
     name: "Review",
     path: "/",
   },
-  // {
-  //   name: "Inverse",
-  //   path: "/inverse",
-  // },
+  {
+    name: "⟵",
+    path: "/inverse",
+  },
   {
     name: "List",
     path: "/list",
