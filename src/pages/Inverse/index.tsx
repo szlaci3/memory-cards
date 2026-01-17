@@ -12,7 +12,7 @@ function Inverse() {
 				await initializeDatabase();
 				const allCards = await db.cards.toArray();
 				const enToNlCards = allCards.filter(
-					(card) => (card.category || "EN to NL") === "EN to NL",
+					(card) => (card.category || "EN to NL") === "EN to NL" && card.rate !== 0,
 				);
 
 				// Create inverted versions: swap sides[0] and sides[1], keep rest the same

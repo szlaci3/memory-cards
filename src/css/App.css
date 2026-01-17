@@ -211,11 +211,11 @@ nav a {
 	color: #fff;
 	border: none;
 	width: calc(100% - 10px);
-	height: 11px;
+	height: 34px;
 	padding: 12px 3px 3px;
 	text-align: center;
 	z-index: 9;
-	font-size: 16px;
+	font-size: 2rem;
 }
 
 .rating-buttons > * {
@@ -230,6 +230,10 @@ nav a {
 	border-radius: 0.5rem;
 	font-size: 0.875rem;
 	transition: background 0.2s;
+}
+
+.rating-buttons button:first-line {
+	font-size: 2rem;
 }
 
 .interactive {
@@ -647,7 +651,7 @@ nav a {
 	margin-bottom: 1rem;
 }
 
-.app-container .groups-content .flashcard button {
+.app-container .groups-content .flashcard button:not(.winter) {
 	background: linear-gradient(135deg, #a2544e, #f97316);
 }
 
@@ -663,4 +667,8 @@ nav a {
 .action-button.primary {
 	background: linear-gradient(135deg, #f97316, #fbbf24);
 	color: white;
+}
+
+.movement-buttons button {
+	font-size: 2rem;
 }
