@@ -128,7 +128,7 @@ function ReviewCard({
 								</button>
 							</div>
 
-							<div className="movement-buttons" style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px' }}>
+							<div className="movement-buttons">
 								<button
                                     type="button"
                                     className="winter"
