@@ -24,6 +24,12 @@ function Inverse() {
 							: card.sides,
 				}));
                 
+                // Shuffle the cards
+                for (let i = invertedCards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [invertedCards[i], invertedCards[j]] = [invertedCards[j], invertedCards[i]];
+                }
+
 				setCards(invertedCards);
 			} catch (error) {
 				console.error("Error fetching flashcards:", error);
