@@ -35,7 +35,7 @@ function ReviewCard({
 			setInputValue("1");
 		}
 		setRevealCount(0);
-	}, [card, inputValue]);
+	}, [card]);
 
 	const handleShowNextSide = () => {
 		setRevealCount((prev) => prev + 1);
