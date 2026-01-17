@@ -46,3 +46,16 @@ export const selectNextCard = (
 	cardScores.sort((a, b) => b.score - a.score);
 	return cardScores[0].index;
 };
+
+export const formatDueAt = (dueAt: number | null | undefined): string => {
+	if (dueAt === Infinity || dueAt === null || dueAt === undefined) {
+		return "Not reviewed";
+	}
+	const date = new Date(dueAt);
+	const month = date.toLocaleString("en-US", { month: "short" });
+	const day = date.getDate();
+	const hours = date.getHours().toString().padStart(2, "0");
+	const minutes = date.getMinutes().toString().padStart(2, "0");
+	return `Due: ${month} ${day}, ${hours}:${minutes}`;
+};
+

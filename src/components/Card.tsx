@@ -176,7 +176,7 @@ function Card({
 						>
 							Add to Default
 						</button>
-						<button type="button" onClick={() => onEditCard(card)}>
+						<button type="button" className="action-button primary" onClick={() => onEditCard(card)}>
 							Edit
 						</button>
 					</div>

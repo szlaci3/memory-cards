@@ -100,11 +100,3 @@ h1 {
 	background: var(--button-hover);
 }
 
-.action-button.primary {
-	background: linear-gradient(135deg, #f97316, #fbbf24);
-	color: white;
-}
-
-.action-button.primary:hover {
-	background: linear-gradient(135deg, #ea580c, #f59e0b);
-}

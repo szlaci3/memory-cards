@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import type { CardType } from "types/index";
 import { addToDefaultGroup, db, initializeDatabase } from "utils/db";
 import "css/App.css";
+import { formatDueAt } from "utils/utils";
 
 function List() {
 	const [cards, setCards] = useState<CardType[]>([]);
@@ -35,33 +36,6 @@ function List() {
 			setFilteredCards(filtered.slice(0, 50));
 		}
 	}, [searchQuery, cards]);
-
-	const formatDueAt = (dueAt: number | null | undefined): string => {
-		if (dueAt === Infinity || dueAt === null || dueAt === undefined) {
-			return "Not reviewed";
-		}
-		const date = new Date(dueAt);
-		const month = date.toLocaleString("en-US", { month: "short" });
-		const day = date.getDate();
-		const hours = date.getHours().toString().padStart(2, "0");
-		const minutes = date.getMinutes().toString().padStart(2, "0");
-		return `Due: ${month} ${day}, ${hours}:${minutes}`;
-	};
-
-	// const handleDeleteAll = async () => {
-	// 	if (
-	// 		confirm(
-	// 			"Are you sure you want to delete ALL cards? This action cannot be undone.",
-	// 		)
-	// 	) {
-	// 		try {
-	// 			await db.cards.clear();
-	// 			setCards([]);
-	// 		} catch (error) {
-	// 			console.error("Error deleting all cards:", error);
-	// 		}
-	// 	}
-	// };
 
 	const handleEdit = (cardId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
