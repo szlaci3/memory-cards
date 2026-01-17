@@ -80,10 +80,7 @@ function Review({ cards, setCards, onRateCard, onClearUrl }: ReviewProps) {
             return newBatch;
         });
 
-        // Proceed to next card
-
-        
-        handleNextCard();
+        // Iteration not needed. It proceeds to next card bc current was removed (if insertIndex > current index)
 	};
 
 
