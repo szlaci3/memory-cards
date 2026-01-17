@@ -53,6 +53,10 @@ function ReviewCard({
 
 	const isDevCategory = card.category === "Dev";
 
+	const isInverse = window.location.pathname.includes("/inverse");
+	const isGroup = window.location.pathname.includes("/groups");
+	const isInverseOrGroup = isInverse || isGroup;
+	
 	const renderSide = (side: string, index: number) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <Sides are static>
 		<div key={index} className={`side ${index % 2 === 0 ? "" : "side-yellow"}`}>
@@ -118,14 +122,18 @@ function ReviewCard({
 										</div>
 									</button>
 								</div>
-								<button type="button" onClick={() => handleRateCard(option3)}>
-									<div>{option3}</div>
-									<div>day{option3 === 1 ? "" : "s"}</div>
-								</button>
-								<button type="button" onClick={() => handleRateCard(option4)}>
-									<div>{option4}</div>
-									<div>days</div>
-								</button>
+								{!isInverseOrGroup && (
+									<>
+										<button type="button" onClick={() => handleRateCard(option3)}>
+											<div>{option3}</div>
+											<div>day{option3 === 1 ? "" : "s"}</div>
+										</button>
+										<button type="button" onClick={() => handleRateCard(option4)}>
+											<div>{option4}</div>
+											<div>days</div>
+										</button>
+									</>
+								)}
 							</div>
 
 							<div className="movement-buttons">
@@ -172,9 +180,11 @@ function ReviewCard({
 						>
 							Add to Default
 						</button>
-						<button type="button" className="action-button primary" onClick={() => onEditCard(card)}>
-							Edit
-						</button>
+						{!isInverse && (
+							<button type="button" className="action-button primary" onClick={() => onEditCard(card)}>
+								Edit
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
