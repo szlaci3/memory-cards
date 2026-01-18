@@ -686,11 +686,12 @@ nav a {
 .debug-info {
     margin-top: 20px;
     font-size: 0.8em;
-    color: #666;
+    color: #686767;
 }
 
 .debug-info div:nth-child(2) {
     font-size: 2rem;
+	color: #777;
 }
 
 
