@@ -94,8 +94,9 @@ function Review({ cards, setCards, onRateCard, onClearUrl }: ReviewProps) {
                 allCards={cards}
                 category={currentCard.category || "EN to NL"}
 			/>
-            <div className="debug-info" style={{marginTop: 20, fontSize: '0.8em', color: '#666'}}>
-                <div>Index: {currentCardIndex}</div>
+            <div className="debug-info">
+                <div>Index:</div>
+                <div>{currentCardIndex}</div>
                 <div>Rate: {currentCard.rate}</div>
                 <div>{formatDueAt(currentCard.dueAt)}</div>
             </div>
