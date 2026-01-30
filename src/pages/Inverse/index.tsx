@@ -16,13 +16,14 @@ function Inverse() {
 				);
 
 				// Create inverted versions: swap sides[0] and sides[1], keep rest the same
-				const invertedCards = enToNlCards.map((card) => ({
-					...card,
-					sides:
-						card.sides.length >= 2
-							? [card.sides[1], card.sides[0], ...card.sides.slice(2)]
-							: card.sides,
-				}));
+				const invertedCards = enToNlCards;
+				// const invertedCards = enToNlCards.map((card) => ({
+				// 	...card,
+				// 	sides:
+				// 		card.sides.length >= 2
+				// 			? [card.sides[1], card.sides[0], ...card.sides.slice(2)]
+				// 			: card.sides,
+				// }));
                 
                 // Shuffle the cards
                 for (let i = invertedCards.length - 1; i > 0; i--) {
