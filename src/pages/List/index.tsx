@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import type { CardType } from "types/index";
-import { addToDefaultGroup, db, initializeDatabase } from "utils/db";
+import { addToDefaultGroup, db } from "utils/db";
 import "css/App.css";
 import { formatDueAt } from "utils/utils";
 
@@ -14,7 +14,7 @@ function List() {
 	useEffect(() => {
 		async function loadCards() {
 			try {
-				await initializeDatabase();
+
 				const allCards = await db.cards.toArray();
 				setCards(allCards);
 			} catch (error) {
@@ -53,6 +53,25 @@ function List() {
 			}
 		}
 	};
+
+	
+	const handleDeleteAll = async () => {
+		if (
+			confirm(
+				"Delete ALL?",
+			) && confirm(
+				"Are you sure you want to delete ALL cards? This action cannot be undone.",
+			)
+		) {
+			try {
+				await db.cards.clear();
+				setCards([]);
+			} catch (error) {
+				console.error("Error deleting all cards:", error);
+			}
+		}
+	};
+
 
 	const handleAddToDefaultGroup = async (cardId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -232,13 +251,13 @@ function List() {
 						>
 							&lt;&lt;
 						</button>
-						{/* <button
+						<button
 							type="button"
 							onClick={handleDeleteAll}
 							className="delete-all-button"
 						>
 							Delete All Cards
-						</button> */}
+						</button>
 						<button
 							type="button"
 							onClick={handleExportDB}

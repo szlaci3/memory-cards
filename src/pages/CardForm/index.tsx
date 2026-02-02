@@ -2,7 +2,7 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import type { CardCategory, CardType } from "types/index";
 import "css/form.css";
 import { useNavigate, useParams } from "react-router";
-import { db, initializeDatabase, addToDefaultGroup } from "utils/db";
+import { db, addToDefaultGroup } from "utils/db";
 
 const CardForm = () => {
 	const [sides, setSides] = useState<string[]>(["", ""]);
@@ -33,7 +33,7 @@ const CardForm = () => {
 
 	const fetchCard = async (cardId: string) => {
 		try {
-			await initializeDatabase();
+
 			const card = await db.cards.get(cardId);
 			if (card) {
 				setCard(card);
@@ -66,7 +66,7 @@ const CardForm = () => {
 
 	const handleSubmit = async (): Promise<void> => {
 		try {
-			await initializeDatabase();
+
 			const updatedSides = sides.filter((item) => !!item);
 			if (!card) {
 				// Create new card
@@ -86,18 +86,21 @@ const CardForm = () => {
 						console.warn("Failed to add to default group:", result.message);
 					}
 				}
+
+				// Reset form for next card
+				setSides(["", ""]);
+				// Keep current category and addToDefault preference
 			} else {
 				// Update existing card
 				await db.cards.update(card.id, {
 					sides: updatedSides,
 					category,
 				});
+				navigate("/");
 			}
 		} catch (error) {
 			console.error("Error creating/updating card:", error);
 			// Handle error
-		} finally {
-			navigate("/");
 		}
 	};
 
@@ -205,7 +208,7 @@ const CardForm = () => {
 							Add Side
 						</button>
 						<button
-							className="action-button primary"
+							className={`action-button ${sides[0] ? "primary" : "secondary"}`}
 							type="button"
 							onClick={handleSubmit}
 						>

@@ -2,7 +2,7 @@ import Review from "components/Review";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import type { CardCategory, CardType } from "types/index";
-import { db, initializeDatabase } from "utils/db";
+import { db } from "utils/db";
 
 function Home() {
 	const [allCards, setAllCards] = useState<CardType[]>([]);
@@ -19,7 +19,7 @@ function Home() {
 	useEffect(() => {
 		async function loadCards() {
 			try {
-				await initializeDatabase();
+
 				const cards = await db.cards.toArray();
 				setAllCards(cards);
 			} catch (error) {

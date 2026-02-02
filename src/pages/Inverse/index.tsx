@@ -1,7 +1,7 @@
 import Review from "components/Review";
 import { useEffect, useState } from "react";
 import type { CardType } from "types/index";
-import { db, initializeDatabase } from "utils/db";
+import { db } from "utils/db";
 
 function Inverse() {
 	const [cards, setCards] = useState<CardType[]>([]);
@@ -9,7 +9,7 @@ function Inverse() {
 	useEffect(() => {
 		async function loadCards() {
 			try {
-				await initializeDatabase();
+
 				const allCards = await db.cards.toArray();
 				const enToNlCards = allCards.filter(
 					(card) => (card.category || "EN to NL") === "EN to NL" && card.rate !== 0,

@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import { coldStartCards } from "src/pages/Home/coldStartCards";
+
 import type { CardType, GroupType, SettingsType } from "types/index";
 
 export class CardDatabase extends Dexie {
@@ -104,13 +104,7 @@ export class CardDatabase extends Dexie {
 
 export const db = new CardDatabase();
 
-// Initialize database with cold start cards if empty
-export async function initializeDatabase() {
-	const count = await db.cards.count();
-	if (count === 0) {
-		await db.cards.bulkAdd(coldStartCards);
-	}
-}
+
 
 export async function addToDefaultGroup(cardId: string): Promise<{ success: boolean; message: string }> {
 	try {

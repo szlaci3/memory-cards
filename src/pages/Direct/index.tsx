@@ -1,7 +1,7 @@
 import StudySession from "components/StudySession";
 import { useEffect, useMemo, useState } from "react";
 import type { CardType } from "types/index";
-import { db, initializeDatabase } from "utils/db";
+import { db } from "utils/db";
 
 function RateCards() {
 	const [cardList, setCardList] = useState<CardType[]>([]);
@@ -9,7 +9,7 @@ function RateCards() {
 	useEffect(() => {
 		async function loadCards() {
 			try {
-				await initializeDatabase();
+
 				const cards = await db.cards.toArray();
 				setCardList(cards);
 			} catch (error) {
