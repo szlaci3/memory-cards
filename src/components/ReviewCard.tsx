@@ -122,17 +122,15 @@ function ReviewCard({
 										</div>
 									</button>
 								</div>
+								<button type="button" onClick={() => handleRateCard(option3)}>
+									<div>{option3}</div>
+									<div>day{option3 === 1 ? "" : "s"}</div>
+								</button>
 								{!isInverseOrGroup && (
-									<>
-										<button type="button" onClick={() => handleRateCard(option3)}>
-											<div>{option3}</div>
-											<div>day{option3 === 1 ? "" : "s"}</div>
-										</button>
 										<button type="button" onClick={() => handleRateCard(option4)}>
 											<div>{option4}</div>
 											<div>days</div>
 										</button>
-									</>
 								)}
 							</div>
 
