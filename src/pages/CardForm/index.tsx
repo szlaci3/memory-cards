@@ -11,6 +11,7 @@ const CardForm = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const [addToDefault, setAddToDefault] = useState<boolean>(false);
+	const [dueNow, setDueNow] = useState<boolean>(true);
 
 	const { id } = useParams(); // Get the card ID from the URL
 	const navigate = useNavigate();
@@ -74,7 +75,7 @@ const CardForm = () => {
 					id: crypto.randomUUID(),
 					sides: updatedSides,
 					rate: null,
-					dueAt: null,
+					dueAt: dueNow ? Date.now() : null,
 					category,
 				};
 
@@ -197,6 +198,16 @@ const CardForm = () => {
 								/>
 								<label htmlFor="addToDefault" style={{ cursor: "pointer" }}>
 									Add to group
+								</label>
+								<input
+									type="checkbox"
+									id="dueNow"
+									checked={dueNow}
+									onChange={(e) => setDueNow(e.target.checked)}
+									style={{ width: "20px", height: "20px" }}
+								/>
+								<label htmlFor="dueNow" style={{ cursor: "pointer" }}>
+									{dueNow ? "Due now" : 'Due: "null"'}
 								</label>
 							</div>
 						)}
