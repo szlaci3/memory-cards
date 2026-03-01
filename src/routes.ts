@@ -10,7 +10,7 @@ export const routes: Route[] = [
     path: "/",
   },
   {
-    name: "⟵",
+    name: "Inverse",
     path: "/inverse",
   },
   {
@@ -47,4 +47,8 @@ export const routes: Route[] = [
   {
     path: "/sentenceForm/:id",
   },
+  {
+    name: "Direct",
+    path: "/direct"
+  }
 ];

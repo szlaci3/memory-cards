@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
@@ -14,6 +14,7 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 	const [completedWordsIndex, setCompletedWordsIndex] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
 	const navigate = useNavigate();
+	const hiddenInputRef = useRef<HTMLInputElement>(null);
 
 	const pageTitle = direction === "forward" ? "Sentence Practice" : "Zin Practice";
 
@@ -65,7 +66,15 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 		}
 	}, [completedWordsIndex, words, currentSentence]);
 
-	// Handle keypresses for typing the first letter
+	// Keep the hidden input focused so iOS shows the keyboard during typing phase
+	useEffect(() => {
+		if (!currentSentence) return;
+		if (completedWordsIndex >= words.length) return; // Fully revealed
+		const el = hiddenInputRef.current;
+		if (el && document.activeElement !== el) el.focus();
+	}, [currentSentence, completedWordsIndex, words]);
+
+	// Handle keypresses for typing the first letter (desktop keydown)
 	useEffect(() => {
 		if (!currentSentence) return;
 		if (completedWordsIndex >= words.length) return; // Fully revealed
@@ -229,6 +238,38 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 					</div>
 
 					<div className="controls">
+						{/* Hidden input keeps iOS keyboard open during the typing phase */}
+						{!isFullyRevealed && (
+							<input
+								ref={hiddenInputRef}
+								type="text"
+								autoComplete="off"
+								autoCorrect="off"
+								autoCapitalize="none"
+								spellCheck={false}
+								value=""
+								onChange={(e) => {
+									const typed = e.target.value.slice(-1).toLowerCase();
+									if (!typed) return;
+									const currentWord = words[completedWordsIndex];
+									if (!currentWord) return;
+									const match = currentWord.match(/[a-z0-9]/i);
+									const expectedChar = match ? match[0].toLowerCase() : null;
+									if (expectedChar && typed === expectedChar) {
+										setCompletedWordsIndex((prev) => prev + 1);
+									}
+								}}
+								style={{
+									position: "fixed",
+									top: 0,
+									left: 0,
+									width: "1px",
+									height: "1px",
+									opacity: 0,
+									pointerEvents: "none",
+								}}
+							/>
+						)}
 						{!isFullyRevealed && (
 							<button
 								type="button"
