@@ -37,8 +37,6 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 					} else {
 						setBatch(dueList);
 					}
-					// Clean up the URL
-					navigate("/sentence", { replace: true });
 				} else {
 					setBatch(dueList);
 				}
@@ -128,8 +126,12 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 
 			await db.sentences.update(currentSentence.id, { rate: numericRate, dueAt });
 
-			// Move to next sentence
-			setCurrentIndex((prev) => prev + 1);
+			if (initialSentenceId) {
+				navigate("/sentence", { replace: true });
+			} else {
+				// Move to next sentence
+				setCurrentIndex((prev) => prev + 1);
+			}
 		} catch (error) {
 			console.error("Error updating sentence:", error);
 		}
@@ -232,17 +234,15 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 							<h2>{promptText}</h2>
 						</div>
 
-						<div className="side side-yellow" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px", minHeight: "60px" }}>
+						<div className="sentence-yellow" onClick={() => {
+							const el = hiddenInputRef.current;
+							if (el && document.activeElement !== el) el.focus();
+						}}>
 							{words.map((word, i) => {
 								const isCompleted = i < completedWordsIndex;
 								return (
 									<span
 										key={i}
-										style={{
-											fontSize: "1.5rem",
-											fontWeight: isCompleted ? "bold" : "normal",
-											color: isCompleted ? "inherit" : "#888",
-										}}
 									>
 										{isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")}
 									</span>
