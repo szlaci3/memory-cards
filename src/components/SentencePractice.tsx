@@ -86,28 +86,6 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 		if (el && document.activeElement !== el) el.focus();
 	}, [currentSentence, completedWordsIndex, words]);
 
-	// Handle keypresses for typing the first letter (desktop keydown)
-	useEffect(() => {
-		if (!currentSentence) return;
-		if (completedWordsIndex >= words.length) return; // Fully revealed
-
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.ctrlKey || e.altKey || e.metaKey) return;
-			if (e.key.length !== 1) return;
-
-			const currentWord = words[completedWordsIndex];
-			const match = currentWord.match(/[a-z0-9]/i);
-			const expectedChar = match ? match[0].toLowerCase() : null;
-
-			if (expectedChar && e.key.toLowerCase() === expectedChar) {
-				setCompletedWordsIndex((prev) => prev + 1);
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [currentSentence, completedWordsIndex, words]);
-
 	const handleRateSentence = async (rate: string | number) => {
 		if (!currentSentence) return;
 
