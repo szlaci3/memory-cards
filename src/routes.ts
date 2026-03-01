@@ -33,6 +33,14 @@ export const routes: Route[] = [
     path: "/sentence",
   },
   {
+    name: "Zin",
+    path: "/zin",
+  },
+  {
+    name: "Sentences",
+    path: "/sentenceList",
+  },
+  {
     name: "Add Sentence",
     path: "/sentenceForm",
   },

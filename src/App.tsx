@@ -9,6 +9,8 @@ import List from "./pages/List";
 import Direct from "./pages/Direct";
 import Sentence from "./pages/Sentence";
 import SentenceForm from "./pages/SentenceForm";
+import SentenceList from "./pages/SentenceList";
+import Zin from "./pages/Zin";
 
 function App() {
 	return (
@@ -25,6 +27,8 @@ function App() {
 				<Route path="/sentence" element={<Sentence />} />
 				<Route path="/sentenceForm" element={<SentenceForm />} />
 				<Route path="/sentenceForm/:id" element={<SentenceForm />} />
+				<Route path="/sentenceList" element={<SentenceList />} />
+				<Route path="/zin" element={<Zin />} />
 			</Routes>
 		</BrowserRouter>
 	);
