@@ -277,15 +277,9 @@ function SentenceList() {
 							<div
 								key={sentence.id}
 								className="card-list-item"
-								onClick={(e) => handleEdit(sentence.id, e)}
+								onClick={() => navigate(`/sentence?sentenceId=${sentence.id}`)}
 								role="button"
 								tabIndex={0}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										handleEdit(sentence.id, e as any);
-									}
-								}}
 								style={{ cursor: "pointer" }}
 							>
 								<div className="card-list-content" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "4px" }}>

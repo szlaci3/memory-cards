@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
 import "css/App.css";
@@ -14,6 +14,8 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 	const [completedWordsIndex, setCompletedWordsIndex] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+	const initialSentenceId = searchParams.get("sentenceId");
 	const hiddenInputRef = useRef<HTMLInputElement>(null);
 
 	const pageTitle = direction === "forward" ? "Sentence Practice" : "Zin Practice";
@@ -27,13 +29,25 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 				const dueList = allSentences.filter((s) => {
 					return typeof s.dueAt === "number" && s.dueAt <= now;
 				});
-				setBatch(dueList);
+				if (initialSentenceId) {
+					const target = allSentences.find((s) => s.id === initialSentenceId);
+					if (target) {
+						const rest = dueList.filter((s) => s.id !== initialSentenceId);
+						setBatch([target, ...rest]);
+					} else {
+						setBatch(dueList);
+					}
+					// Clean up the URL
+					navigate("/sentence", { replace: true });
+				} else {
+					setBatch(dueList);
+				}
 			} catch (error) {
 				console.error("Error fetching sentences:", error);
 			}
 		}
 		loadSentences();
-	}, []);
+	}, [initialSentenceId]);
 
 	const currentSentence = batch[currentIndex];
 	
@@ -246,6 +260,7 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 								autoComplete="off"
 								autoCorrect="off"
 								autoCapitalize="none"
+								autoFocus={true}
 								spellCheck={false}
 								value=""
 								onChange={(e) => {

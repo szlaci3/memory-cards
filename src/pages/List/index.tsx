@@ -296,12 +296,6 @@ function List() {
 								onClick={() => handleCardClick(card.id)}
 								role="button"
 								tabIndex={0}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										handleCardClick(card.id);
-									}
-								}}
 							>
 								<div className="card-list-content">
 									<div className="card-list-side">
