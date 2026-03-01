@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Inverse from "./pages/Inverse";
 import List from "./pages/List";
 import Direct from "./pages/Direct";
+import Sentence from "./pages/Sentence";
+import SentenceForm from "./pages/SentenceForm";
 
 function App() {
 	return (
@@ -20,6 +22,9 @@ function App() {
 				<Route path="/cardForm/:id" element={<CardForm />} />
 				<Route path="/groups" element={<Groups />} />
 				<Route path="/direct" element={<Direct />} />
+				<Route path="/sentence" element={<Sentence />} />
+				<Route path="/sentenceForm" element={<SentenceForm />} />
+				<Route path="/sentenceForm/:id" element={<SentenceForm />} />
 			</Routes>
 		</BrowserRouter>
 	);

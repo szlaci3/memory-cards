@@ -29,7 +29,14 @@ export const routes: Route[] = [
     path: "/groups",
   },
   {
-    name: "Direct",
-    path: "/direct",
+    name: "Sentence",
+    path: "/sentence",
+  },
+  {
+    name: "Add Sentence",
+    path: "/sentenceForm",
+  },
+  {
+    path: "/sentenceForm/:id",
   },
 ];

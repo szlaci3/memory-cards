@@ -1,11 +1,12 @@
 import Dexie, { type Table } from "dexie";
 
-import type { CardType, GroupType, SettingsType } from "types/index";
+import type { CardType, GroupType, SettingsType, SentenceType } from "types/index";
 
 export class CardDatabase extends Dexie {
 	cards!: Table<CardType, string>;
 	groups!: Table<GroupType, string>;
 	settings!: Table<SettingsType, string>;
+	sentences!: Table<SentenceType, string>;
 
 	constructor() {
 		super("CardDatabase");
@@ -99,6 +100,14 @@ export class CardDatabase extends Dexie {
 				// Optional: Remove isDefault from groups? 
 				// For now keeping it simple, new writes won't have it, old reads might ignore it.
 			});
+
+		// Version 12: Add sentences table
+		this.version(12).stores({
+			cards: "id, dueAt, rate",
+			groups: "id, name",
+			settings: "id",
+			sentences: "id, dueAt, rate",
+		});
 	}
 }
 

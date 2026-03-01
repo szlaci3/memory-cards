@@ -34,3 +34,11 @@ export interface StudySessionProps {
 	cards: CardType[];
 	onRateCard: (card: CardType, rate: number) => void;
 }
+
+export interface SentenceType {
+	id: string;
+	original: string;
+	translation: string;
+	rate: number | null;
+	dueAt: number | null;
+}
