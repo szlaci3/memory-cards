@@ -10,6 +10,10 @@ export const routes: Route[] = [
     path: "/",
   },
   {
+    name: "Full",
+    path: "/full",
+  },
+  {
     name: "Inverse",
     path: "/inverse",
   },

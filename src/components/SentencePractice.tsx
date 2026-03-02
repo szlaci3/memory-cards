@@ -138,6 +138,12 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 		setCompletedWordsIndex(0);
 	};
 
+	const onEditSentence = (sentenceToEdit: SentenceType) => {
+		if (confirm("Sure you want to leave the page?")) {
+			navigate(`/sentenceForm/${sentenceToEdit.id}`);
+		}
+	};
+
 	if (batch.length === 0) {
 		return (
 			<div className="app-container">
@@ -346,7 +352,7 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 								<button
 									type="button"
 									className="action-button primary"
-									onClick={() => navigate(`/sentenceForm/${currentSentence.id}`)}
+									onClick={() => onEditSentence(currentSentence)}
 								>
 									Edit
 								</button>

@@ -41,7 +41,9 @@ function Card({
 	};
 
 	const onEditCard = (cardToEdit: CardType) => {
-		navigate(`/cardForm/${cardToEdit.id}`);
+		if (confirm("Sure you want to leave the page?")) {
+			navigate(`/cardForm/${cardToEdit.id}`);
+		}
 	};
 
 	const option3 = card.rate === 0 ? 2 : card.rate || 2;

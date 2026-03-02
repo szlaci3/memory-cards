@@ -20,6 +20,7 @@ function detectSection(pathname: string): Section {
 const sectionLinks: Record<Section, { name: string; path: string }[]> = {
   Words: [
     { name: "Review", path: "/" },
+    { name: "Full", path: "/full" },
     { name: "Inverse", path: "/inverse" },
     { name: "List", path: "/list" },
     { name: "Add", path: "/cardForm" },

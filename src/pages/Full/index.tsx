@@ -3,34 +3,26 @@ import { useEffect, useState } from "react";
 import type { CardType } from "types/index";
 import { db } from "utils/db";
 
-function Inverse() {
+function Full() {
 	const [cards, setCards] = useState<CardType[]>([]);
 
 	useEffect(() => {
 		async function loadCards() {
 			try {
-
 				const allCards = await db.cards.toArray();
 				const enToNlCards = allCards.filter(
 					(card) => (card.category || "EN to NL") === "EN to NL" && card.rate !== 0,
 				);
 
-				// Create inverted versions: swap sides[0] and sides[1], keep rest the same
-				const invertedCards = enToNlCards.map((card) => ({
-					...card,
-					sides:
-						card.sides.length >= 2
-							? [card.sides[1], card.sides[0], ...card.sides.slice(2)]
-							: card.sides,
-				}));
+				const fullCards = enToNlCards;
                 
                 // Shuffle the cards
-                for (let i = invertedCards.length - 1; i > 0; i--) {
+                for (let i = fullCards.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [invertedCards[i], invertedCards[j]] = [invertedCards[j], invertedCards[i]];
+                    [fullCards[i], fullCards[j]] = [fullCards[j], fullCards[i]];
                 }
 
-				setCards(invertedCards);
+				setCards(fullCards);
 			} catch (error) {
 				console.error("Error fetching flashcards:", error);
 			}
@@ -94,4 +86,4 @@ function Inverse() {
 	);
 }
 
-export default Inverse;
+export default Full;

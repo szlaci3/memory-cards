@@ -23,7 +23,9 @@ function ReviewCard({
     const navigate = useNavigate();
 
     const onEditCard = (cardToEdit: CardType) => {
-        navigate(`/cardForm/${cardToEdit.id}`);
+		if (confirm("Sure you want to leave the page?")) {
+			navigate(`/cardForm/${cardToEdit.id}`);
+		}
     };
 
 	useEffect(() => {
@@ -178,11 +180,9 @@ function ReviewCard({
 						>
 							Add to Default
 						</button>
-						{!isInverse && (
-							<button type="button" className="action-button primary" onClick={() => onEditCard(card)}>
-								Edit
-							</button>
-						)}
+						<button type="button" className="action-button primary" onClick={() => onEditCard(card)}>
+							Edit
+						</button>
 					</div>
 				</div>
 			</div>
