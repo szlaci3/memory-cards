@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 
 type Section = "Words" | "Sentences" | "Legacy";
 
-const sentencesPaths = ["/sentence", "/zin", "/sentenceList", "/sentenceForm"];
+const sentencesPaths = ["/sentence", "/sentenceFull", "/sentenceInverse", "/sentenceList", "/sentenceForm"];
 const legacyPaths = ["/groups", "/direct"];
 
 const sectionDefaultPath: Record<Section, string> = {
@@ -27,7 +27,8 @@ const sectionLinks: Record<Section, { name: string; path: string }[]> = {
   ],
   Sentences: [
     { name: "Review", path: "/sentence" },
-    { name: "Inverse", path: "/zin" },
+    { name: "Full", path: "/sentenceFull" },
+    { name: "Inverse", path: "/sentenceInverse" },
     { name: "List", path: "/sentenceList" },
     { name: "Add", path: "/sentenceForm" },
   ],

@@ -6,9 +6,10 @@ import "css/App.css";
 
 interface SentencePracticeProps {
 	direction: "forward" | "reverse";
+	isFullBatch?: boolean;
 }
 
-function SentencePractice({ direction }: SentencePracticeProps) {
+function SentencePractice({ direction, isFullBatch = false }: SentencePracticeProps) {
 	const [batch, setBatch] = useState<SentenceType[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [completedWordsIndex, setCompletedWordsIndex] = useState(0);
@@ -18,7 +19,7 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 	const initialSentenceId = searchParams.get("sentenceId");
 	const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-	const pageTitle = direction === "forward" ? "Sentence Practice" : "Zin Practice";
+	const pageTitle = "Sentence Practice";
 
 	// Load due sentences
 	useEffect(() => {
@@ -26,19 +27,32 @@ function SentencePractice({ direction }: SentencePracticeProps) {
 			try {
 				const allSentences = await db.sentences.toArray();
 				const now = Date.now();
-				const dueList = allSentences.filter((s) => {
-					return typeof s.dueAt === "number" && s.dueAt <= now;
-				});
+				
+				let targetList = allSentences;
+
+				if (!isFullBatch) {
+					targetList = allSentences.filter((s) => {
+						return typeof s.dueAt === "number" && s.dueAt <= now;
+					});
+				} else {
+					targetList = allSentences.filter((s) => s.rate !== 0);
+					// Shuffle the cards
+					for (let i = targetList.length - 1; i > 0; i--) {
+						const j = Math.floor(Math.random() * (i + 1));
+						[targetList[i], targetList[j]] = [targetList[j], targetList[i]];
+					}
+				}
+
 				if (initialSentenceId) {
 					const target = allSentences.find((s) => s.id === initialSentenceId);
 					if (target) {
-						const rest = dueList.filter((s) => s.id !== initialSentenceId);
+						const rest = targetList.filter((s) => s.id !== initialSentenceId);
 						setBatch([target, ...rest]);
 					} else {
-						setBatch(dueList);
+						setBatch(targetList);
 					}
 				} else {
-					setBatch(dueList);
+					setBatch(targetList);
 				}
 			} catch (error) {
 				console.error("Error fetching sentences:", error);

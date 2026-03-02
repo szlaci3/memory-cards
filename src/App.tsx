@@ -9,9 +9,10 @@ import Inverse from "./pages/Inverse";
 import List from "./pages/List";
 import Direct from "./pages/Direct";
 import Sentence from "./pages/Sentence";
+import SentenceFull from "./pages/SentenceFull";
+import SentenceInverse from "./pages/SentenceInverse";
 import SentenceForm from "./pages/SentenceForm";
 import SentenceList from "./pages/SentenceList";
-import Zin from "./pages/Zin";
 
 function App() {
 	return (
@@ -27,10 +28,11 @@ function App() {
 				<Route path="/groups" element={<Groups />} />
 				<Route path="/direct" element={<Direct />} />
 				<Route path="/sentence" element={<Sentence />} />
+				<Route path="/sentenceFull" element={<SentenceFull />} />
+				<Route path="/sentenceInverse" element={<SentenceInverse />} />
 				<Route path="/sentenceForm" element={<SentenceForm />} />
 				<Route path="/sentenceForm/:id" element={<SentenceForm />} />
 				<Route path="/sentenceList" element={<SentenceList />} />
-				<Route path="/zin" element={<Zin />} />
 			</Routes>
 		</BrowserRouter>
 	);
