@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
 import "css/App.css";
+import { e } from "node_modules/react-router/dist/development/route-data-Cq_b5feC.d.mts";
 
 interface SentencePracticeProps {
 	direction: "forward" | "reverse";
@@ -18,8 +19,18 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 	const [searchParams] = useSearchParams();
 	const initialSentenceId = searchParams.get("sentenceId");
 	const hiddenInputRef = useRef<HTMLInputElement>(null);
+	const deleteValue = searchParams.get("delete");
+	const isDeleteMode = deleteValue === "true" || localStorage.getItem("isDeleteMode") === "true";
 
 	const pageTitle = "Sentence Practice";
+
+	useEffect(() => {
+		if (deleteValue === "true") {
+			localStorage.setItem("isDeleteMode", "true");
+		} else if (deleteValue === "false") {
+			localStorage.removeItem("isDeleteMode");
+		}
+	}, [deleteValue]);
 
 	// Load due sentences
 	useEffect(() => {
@@ -158,6 +169,16 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 		}
 	};
 
+	const handleDelete = async (sentenceId: string) => {
+		try {
+			await db.sentences.delete(sentenceId);
+			setBatch((prev) => prev.filter((s) => s.id !== sentenceId));
+		} catch (error) {
+			console.error("Error deleting sentence:", error);
+		}
+	};
+
+
 	if (batch.length === 0) {
 		return (
 			<div className="app-container">
@@ -242,7 +263,8 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 									<span
 										key={i}
 									>
-										{isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")}
+										{/* {isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")} */}
+										{isCompleted ? word : "__"}
 									</span>
 								);
 							})}
@@ -369,6 +391,18 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 									onClick={() => onEditSentence(currentSentence)}
 								>
 									Edit
+								</button>
+							</div>
+						)}
+
+						{isDeleteMode && (
+							<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
+								<button
+									type="button"
+									className="delete-button"
+									onClick={() => handleDelete(currentSentence.id)}
+								>
+									Delete
 								</button>
 							</div>
 						)}
