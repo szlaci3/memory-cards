@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
 import "css/App.css";
-import { e } from "node_modules/react-router/dist/development/route-data-Cq_b5feC.d.mts";
 
 interface SentencePracticeProps {
 	direction: "forward" | "reverse";
