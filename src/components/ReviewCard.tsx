@@ -8,7 +8,7 @@ interface ReviewCardProps {
 	card: CardType;
 	onRate: (rate: number, timerMs?: number) => void;
 	onMove: (step: number, timerMs?: number) => void;
-	onSkip: () => void;
+	onSkip: (timerMs?: number) => void;
 	allCards: CardType[];
 	category: CardCategory;
 }
@@ -90,6 +90,11 @@ function ReviewCard({
 	const handleMoveCard = (step: number) => {
 		const timerMs = stopTimer();
 		onMove(step, isTimerSkipped ? undefined : timerMs);
+	};
+
+	const handleSkipCard = () => {
+		const timerMs = stopTimer();
+		onSkip(isTimerSkipped ? undefined : timerMs);
 	};
 
 	const option3 = card.rate === 0 ? 2 : card.rate || 2;
@@ -203,7 +208,7 @@ function ReviewCard({
                                 <button
                                     type="button"
                                     className="winter"
-                                    onClick={onSkip}
+                                    onClick={handleSkipCard}
                                 >
                                     Last
                                 </button>

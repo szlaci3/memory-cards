@@ -29,8 +29,15 @@ function Review({ cards, setCards, onRateCard, onClearUrl }: ReviewProps) {
 
 	const currentCard = cards[currentCardIndex];
 
-    const handleNextCard = () => {
+    const handleNextCard = (timerMs?: number) => {
         onClearUrl();
+		if (typeof timerMs === "number") {
+			setCards((prev) =>
+				prev.map((card, index) =>
+					index === currentCardIndex ? { ...card, timerMs } : card,
+				),
+			);
+		}
         setCurrentCardIndex((prev) => {
             const nextIndex = prev + 1;
             return nextIndex >= cards.length ? 0 : nextIndex;

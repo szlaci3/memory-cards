@@ -206,10 +206,14 @@ function SentencePractice({
 
 	const handleSkip = () => {
 		if (!currentSentence) return;
+		const timerMs = stopTimer();
 		setBatch((prev) => {
 			const newBatch = [...prev];
-			const cardToMove = newBatch.splice(currentIndex, 1)[0];
-			newBatch.push(cardToMove);
+			const sentenceToMove = newBatch.splice(currentIndex, 1)[0];
+			const updatedSentenceToMove = isTimerSkipped
+				? sentenceToMove
+				: { ...sentenceToMove, timerMs };
+			newBatch.push(updatedSentenceToMove);
 			return newBatch;
 		});
 		setCompletedWordsIndex(0);
