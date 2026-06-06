@@ -20,6 +20,7 @@ export interface CardType {
 	dueAt?: number | null;
 	rate?: number | null;
 	category?: CardCategory;
+	timerMs?: number;
 }
 
 export interface CardProps {
@@ -41,4 +42,5 @@ export interface SentenceType {
 	translation: string;
 	rate: number | null;
 	dueAt: number | null;
+	timerMs?: number;
 }

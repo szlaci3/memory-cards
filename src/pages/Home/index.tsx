@@ -82,7 +82,7 @@ function Home() {
 		"Dev",
 	];
 
-	const handleRateCard = async (card: CardType, rate: number) => {
+	const handleRateCard = async (card: CardType, rate: number, timerMs?: number) => {
 		try {
 			const now = Date.now();
 			const dayInMs = 24 * 60 * 60 * 1000;
@@ -94,11 +94,14 @@ function Home() {
 					? now + 10 * minuteInMs
 					: now + rate * dayInMs;
 
-			await db.cards.update(card.id, { rate, dueAt });
+			const updates: Partial<CardType> = { rate, dueAt };
+			if (typeof timerMs === "number") updates.timerMs = timerMs;
+
+			await db.cards.update(card.id, updates);
             
             // Update allCards to reflect change
             setAllCards((prev) => 
-                prev.map((c) => c.id === card.id ? { ...card, rate, dueAt } : c)
+                prev.map((c) => c.id === card.id ? { ...card, ...updates } : c)
             );
 		} catch (error) {
 			console.error("Error updating flashcard:", error);

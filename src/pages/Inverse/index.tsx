@@ -38,7 +38,7 @@ function Inverse() {
 		loadCards();
 	}, []);
     
-	const handleRateCard = async (card: CardType, rate: number) => {
+	const handleRateCard = async (card: CardType, rate: number, timerMs?: number) => {
 		try {
 			const now = Date.now();
 			const dayInMs = 24 * 60 * 60 * 1000;
@@ -50,8 +50,11 @@ function Inverse() {
 					? now + 10 * minuteInMs
 					: now + rate * dayInMs;
             
+			const updates: Partial<CardType> = { rate, dueAt };
+			if (typeof timerMs === "number") updates.timerMs = timerMs;
+
             // Perform a partial update to avoid overwriting sides with inverted ones
-			await db.cards.update(card.id, { rate, dueAt });
+			await db.cards.update(card.id, updates);
             
             // We don't need to update local 'cards' state because Review handles removing the card from the batch.
 		} catch (error) {

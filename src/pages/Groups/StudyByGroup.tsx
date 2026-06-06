@@ -29,7 +29,7 @@ function StudyByGroup({ group }: StudyByGroupProps) {
 		loadCards();
 	}, [group]);
 
-	const handleRateCard = async (card: CardType, rate: number) => {
+	const handleRateCard = async (card: CardType, rate: number, timerMs?: number) => {
 		try {
 			const now = Date.now();
 			const dayInMs = 24 * 60 * 60 * 1000;
@@ -41,7 +41,10 @@ function StudyByGroup({ group }: StudyByGroupProps) {
 					? now + 10 * minuteInMs // 10 minutes
 					: now + rate * dayInMs; // n days
 
-			await db.cards.update(card.id, { rate, dueAt });
+			const updates: Partial<CardType> = { rate, dueAt };
+			if (typeof timerMs === "number") updates.timerMs = timerMs;
+
+			await db.cards.update(card.id, updates);
 		} catch (error) {
 			console.error("Error updating flashcard:", error);
 		}

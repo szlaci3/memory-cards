@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import type { CardCategory, CardType } from "types/index";
 import { addToDefaultGroup } from "utils/db";
+import ReviewTimer from "./ReviewTimer";
 
 interface ReviewCardProps {
 	card: CardType;
-	onRate: (rate: number) => void;
-	onMove: (step: number) => void;
+	onRate: (rate: number, timerMs?: number) => void;
+	onMove: (step: number, timerMs?: number) => void;
 	onSkip: () => void;
 	allCards: CardType[];
 	category: CardCategory;
@@ -20,6 +21,11 @@ function ReviewCard({
 }: ReviewCardProps) {
 	const [revealCount, setRevealCount] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
+	const [currentTimerMs, setCurrentTimerMs] = useState(0);
+	const [isTimerSkipped, setIsTimerSkipped] = useState(false);
+	const timerStartedAtRef = useRef(Date.now());
+	const timerStoppedRef = useRef(false);
+	const timerValueRef = useRef(0);
     const navigate = useNavigate();
 
     const onEditCard = (cardToEdit: CardType) => {
@@ -37,17 +43,53 @@ function ReviewCard({
 			setInputValue("1");
 		}
 		setRevealCount(0);
+		setCurrentTimerMs(0);
+		setIsTimerSkipped(false);
+		timerStartedAtRef.current = Date.now();
+		timerStoppedRef.current = false;
+		timerValueRef.current = 0;
 	}, [card]);
 
+	useEffect(() => {
+		const intervalId = window.setInterval(() => {
+			if (timerStoppedRef.current) return;
+			const elapsedMs = Date.now() - timerStartedAtRef.current;
+			const roundedMs = Math.floor(elapsedMs / 1000) * 1000;
+			timerValueRef.current = roundedMs;
+			setCurrentTimerMs(roundedMs);
+		}, 1000);
+
+		return () => window.clearInterval(intervalId);
+	}, [card]);
+
+	const stopTimer = () => {
+		if (timerStoppedRef.current) return timerValueRef.current;
+
+		const elapsedMs = Date.now() - timerStartedAtRef.current;
+		timerStoppedRef.current = true;
+		timerValueRef.current = elapsedMs;
+		setCurrentTimerMs(elapsedMs);
+		return elapsedMs;
+	};
+
 	const handleShowNextSide = () => {
+		if (revealCount === 0) {
+			stopTimer();
+		}
 		setRevealCount((prev) => prev + 1);
 	};
 
 	const handleRateCard = (rate: string | number) => {
 		const numericRate =
 			typeof rate === "string" ? (rate === "" ? 1 : parseInt(rate)) : rate;
-		onRate(numericRate);
+		const timerMs = stopTimer();
+		onRate(numericRate, isTimerSkipped ? undefined : timerMs);
 		setRevealCount(0);
+	};
+
+	const handleMoveCard = (step: number) => {
+		const timerMs = stopTimer();
+		onMove(step, isTimerSkipped ? undefined : timerMs);
 	};
 
 	const option3 = card.rate === 0 ? 2 : card.rate || 2;
@@ -78,6 +120,13 @@ function ReviewCard({
 				</div>
 
 				<div className="controls">
+					<ReviewTimer
+						lastTimerMs={card.timerMs}
+						currentTimerMs={currentTimerMs}
+						isSkipped={isTimerSkipped}
+						onSkip={() => setIsTimerSkipped(true)}
+					/>
+
 					{card.sides.length - 1 > revealCount && (
 						<button
 							type="button"
@@ -140,14 +189,14 @@ function ReviewCard({
 								<button
                                     type="button"
                                     className="winter"
-                                    onClick={() => onMove(7)}
+                                    onClick={() => handleMoveCard(7)}
                                 >
                                     #7
                                 </button>
                                 <button
                                     type="button"
                                     className="winter"
-                                    onClick={() => onMove(30)}
+                                    onClick={() => handleMoveCard(30)}
                                 >
                                     #30
                                 </button>

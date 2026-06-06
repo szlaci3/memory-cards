@@ -3,23 +3,33 @@ import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
 import "css/App.css";
+import ReviewTimer from "./ReviewTimer";
 
 interface SentencePracticeProps {
 	direction: "forward" | "reverse";
 	isFullBatch?: boolean;
 }
 
-function SentencePractice({ direction, isFullBatch = false }: SentencePracticeProps) {
+function SentencePractice({
+	direction,
+	isFullBatch = false,
+}: SentencePracticeProps) {
 	const [batch, setBatch] = useState<SentenceType[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [completedWordsIndex, setCompletedWordsIndex] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
+	const [currentTimerMs, setCurrentTimerMs] = useState(0);
+	const [isTimerSkipped, setIsTimerSkipped] = useState(false);
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const initialSentenceId = searchParams.get("sentenceId");
 	const hiddenInputRef = useRef<HTMLInputElement>(null);
+	const timerStartedAtRef = useRef(Date.now());
+	const timerStoppedRef = useRef(false);
+	const timerValueRef = useRef(0);
 	const deleteValue = searchParams.get("delete");
-	const isDeleteMode = deleteValue === "true" || localStorage.getItem("isDeleteMode") === "true";
+	const isDeleteMode =
+		deleteValue === "true" || localStorage.getItem("isDeleteMode") === "true";
 
 	const pageTitle = "Sentence Practice";
 
@@ -37,7 +47,7 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 			try {
 				const allSentences = await db.sentences.toArray();
 				const now = Date.now();
-				
+
 				let targetList = allSentences;
 
 				if (!isFullBatch) {
@@ -72,23 +82,54 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 	}, [initialSentenceId]);
 
 	const currentSentence = batch[currentIndex];
-	
-	const promptText = currentSentence 
-		? (direction === "forward" ? currentSentence.original : currentSentence.translation) 
+
+	const promptText = currentSentence
+		? direction === "forward"
+			? currentSentence.original
+			: currentSentence.translation
 		: "";
-	const targetText = currentSentence 
-		? (direction === "forward" ? currentSentence.translation : currentSentence.original) 
+	const targetText = currentSentence
+		? direction === "forward"
+			? currentSentence.translation
+			: currentSentence.original
 		: "";
-		
+
 	const words = targetText.trim() ? targetText.trim().split(/\s+/) : [];
 
 	useEffect(() => {
 		setCompletedWordsIndex(0);
+		setCurrentTimerMs(0);
+		setIsTimerSkipped(false);
+		timerStartedAtRef.current = Date.now();
+		timerStoppedRef.current = false;
+		timerValueRef.current = 0;
 		if (currentSentence) {
 			setInputValue(currentSentence.rate === 1 ? "2" : "1");
 			if (currentSentence.rate === 0) setInputValue("1");
 		}
 	}, [currentSentence]);
+
+	useEffect(() => {
+		const intervalId = window.setInterval(() => {
+			if (timerStoppedRef.current) return;
+			const elapsedMs = Date.now() - timerStartedAtRef.current;
+			const roundedMs = Math.floor(elapsedMs / 1000) * 1000;
+			timerValueRef.current = roundedMs;
+			setCurrentTimerMs(roundedMs);
+		}, 1000);
+
+		return () => window.clearInterval(intervalId);
+	}, [currentSentence]);
+
+	const stopTimer = () => {
+		if (timerStoppedRef.current) return timerValueRef.current;
+
+		const elapsedMs = Date.now() - timerStartedAtRef.current;
+		timerStoppedRef.current = true;
+		timerValueRef.current = elapsedMs;
+		setCurrentTimerMs(elapsedMs);
+		return elapsedMs;
+	};
 
 	// Auto-advance if a word has no alphanumeric characters
 	useEffect(() => {
@@ -110,6 +151,12 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 		if (el && document.activeElement !== el) el.focus();
 	}, [currentSentence, completedWordsIndex, words]);
 
+	useEffect(() => {
+		if (!currentSentence) return;
+		if (completedWordsIndex < words.length) return;
+		stopTimer();
+	}, [currentSentence, completedWordsIndex, words]);
+
 	const handleRateSentence = async (rate: string | number) => {
 		if (!currentSentence) return;
 
@@ -122,11 +169,13 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 			const minuteInMs = 60 * 1000;
 
 			const dueAt =
-				numericRate === 0
-					? now + 10 * minuteInMs
-					: now + numericRate * dayInMs;
+				numericRate === 0 ? now + 10 * minuteInMs : now + numericRate * dayInMs;
 
-			await db.sentences.update(currentSentence.id, { rate: numericRate, dueAt });
+			const timerMs = stopTimer();
+			const updates: Partial<SentenceType> = { rate: numericRate, dueAt };
+			if (!isTimerSkipped) updates.timerMs = timerMs;
+
+			await db.sentences.update(currentSentence.id, updates);
 
 			if (initialSentenceId) {
 				navigate("/sentence", { replace: true });
@@ -141,11 +190,15 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 
 	const handleMove = (step: number) => {
 		if (!currentSentence) return;
+		const timerMs = stopTimer();
 		setBatch((prev) => {
 			const newBatch = [...prev];
-			const cardToMove = newBatch.splice(currentIndex, 1)[0];
+			const sentenceToMove = newBatch.splice(currentIndex, 1)[0];
+			const updatedSentenceToMove = isTimerSkipped
+				? sentenceToMove
+				: { ...sentenceToMove, timerMs };
 			const insertIndex = (currentIndex + step) % (newBatch.length + 1);
-			newBatch.splice(insertIndex, 0, cardToMove);
+			newBatch.splice(insertIndex, 0, updatedSentenceToMove);
 			return newBatch;
 		});
 		setCompletedWordsIndex(0); // Reset for the next sentence
@@ -177,14 +230,16 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 		}
 	};
 
-
 	if (batch.length === 0) {
 		return (
 			<div className="app-container">
 				<div className="background">
 					<div className="background-base" />
 				</div>
-				<div className="content" style={{ textAlign: "center", marginTop: "50px" }}>
+				<div
+					className="content"
+					style={{ textAlign: "center", marginTop: "50px" }}
+				>
 					<h2>No sentences due!</h2>
 					<button
 						type="button"
@@ -204,7 +259,10 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 				<div className="background">
 					<div className="background-base" />
 				</div>
-				<div className="content" style={{ textAlign: "center", marginTop: "50px" }}>
+				<div
+					className="content"
+					style={{ textAlign: "center", marginTop: "50px" }}
+				>
 					<h2>All due sentences completed!</h2>
 					<button
 						type="button"
@@ -252,16 +310,18 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 							<h2>{promptText}</h2>
 						</div>
 
-						<div className="sentence-yellow" onClick={() => {
-							const el = hiddenInputRef.current;
-							if (el && document.activeElement !== el) el.focus();
-						}}>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<div
+							className="sentence-yellow"
+							onClick={() => {
+								const el = hiddenInputRef.current;
+								if (el && document.activeElement !== el) el.focus();
+							}}
+						>
 							{words.map((word, i) => {
 								const isCompleted = i < completedWordsIndex;
 								return (
-									<span
-										key={i}
-									>
+									<span key={i}>
 										{/* {isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")} */}
 										{isCompleted ? word : "__"}
 									</span>
@@ -271,6 +331,13 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 					</div>
 
 					<div className="controls">
+						<ReviewTimer
+							lastTimerMs={currentSentence.timerMs}
+							currentTimerMs={currentTimerMs}
+							isSkipped={isTimerSkipped}
+							onSkip={() => setIsTimerSkipped(true)}
+						/>
+
 						{/* Hidden input keeps iOS keyboard open during the typing phase */}
 						{!isFullyRevealed && (
 							<input
@@ -308,7 +375,10 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 							<button
 								type="button"
 								className="show-button"
-								onClick={() => setCompletedWordsIndex(words.length)}
+								onClick={() => {
+									stopTimer();
+									setCompletedWordsIndex(words.length);
+								}}
 							>
 								Show Answer
 							</button>
@@ -330,7 +400,10 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 												const num =
 													ev.target.value === ""
 														? ""
-														: Math.max(1, Math.min(999, +ev.target.value)).toString();
+														: Math.max(
+																1,
+																Math.min(999, +ev.target.value),
+															).toString();
 												setInputValue(num);
 											}}
 											onFocus={() => setInputValue("")}
@@ -343,14 +416,22 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 											className="interactive-button"
 										>
 											<div>{inputValue || "0"}</div>
-											<div>day{inputValue === "" || inputValue === "1" ? "" : "s"}</div>
+											<div>
+												day{inputValue === "" || inputValue === "1" ? "" : "s"}
+											</div>
 										</button>
 									</div>
-									<button type="button" onClick={() => handleRateSentence(option3)}>
+									<button
+										type="button"
+										onClick={() => handleRateSentence(option3)}
+									>
 										<div>{option3}</div>
 										<div>day{option3 === 1 ? "" : "s"}</div>
 									</button>
-									<button type="button" onClick={() => handleRateSentence(option4)}>
+									<button
+										type="button"
+										onClick={() => handleRateSentence(option4)}
+									>
 										<div>{option4}</div>
 										<div>days</div>
 									</button>
@@ -371,19 +452,22 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 									>
 										#30
 									</button>
-									<button
-										type="button"
-										className="winter"
-										onClick={handleSkip}
-									>
+									<button type="button" className="winter" onClick={handleSkip}>
 										Last
 									</button>
 								</div>
 							</div>
 						)}
-						
+
 						{isFullyRevealed && (
-							<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
+							<div
+								style={{
+									display: "flex",
+									gap: "10px",
+									justifyContent: "center",
+									marginTop: "10px",
+								}}
+							>
 								<button
 									type="button"
 									className="action-button primary"
@@ -395,7 +479,14 @@ function SentencePractice({ direction, isFullBatch = false }: SentencePracticePr
 						)}
 
 						{isDeleteMode && (
-							<div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
+							<div
+								style={{
+									display: "flex",
+									gap: "10px",
+									justifyContent: "center",
+									marginTop: "10px",
+								}}
+							>
 								<button
 									type="button"
 									className="delete-button"

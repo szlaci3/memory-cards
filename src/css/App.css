@@ -214,6 +214,25 @@ nav a {
 	margin-top: 1.5rem;
 }
 
+.review-timer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	margin: 0 10px 0.75rem;
+	font-size: 0.85rem;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.review-timer-skip {
+	min-width: auto;
+	padding: 0.15rem 0.35rem;
+	border-radius: 0.25rem;
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
 .show-button {
 	width: calc(100% - 20px);
 	margin: 0 10px;

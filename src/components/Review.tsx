@@ -6,7 +6,7 @@ import { formatDueAt } from "utils/utils";
 interface ReviewProps {
 	cards: CardType[];
 	setCards: React.Dispatch<React.SetStateAction<CardType[]>>;
-	onRateCard: (card: CardType, rate: number) => Promise<void>;
+	onRateCard: (card: CardType, rate: number, timerMs?: number) => Promise<void>;
     onClearUrl: () => void;
 }
 
@@ -37,11 +37,11 @@ function Review({ cards, setCards, onRateCard, onClearUrl }: ReviewProps) {
         });
     }
 
-	const handleRate = async (rate: number) => {
+	const handleRate = async (rate: number, timerMs?: number) => {
 		if (!currentCard) return;
 
 		// Call parent to update DB
-		await onRateCard(currentCard, rate);
+		await onRateCard(currentCard, rate, timerMs);
 
         onClearUrl();
 
@@ -58,13 +58,16 @@ function Review({ cards, setCards, onRateCard, onClearUrl }: ReviewProps) {
         })
 	};
 
-	const handleMove = (step: number) => {
+	const handleMove = (step: number, timerMs?: number) => {
         if (!currentCard) return;
 
         onClearUrl();
         setCards((prev) => {
             const batch = [...prev];
-            const cardToMove = batch[currentCardIndex];
+            const cardToMove =
+				typeof timerMs === "number"
+					? { ...batch[currentCardIndex], timerMs }
+					: batch[currentCardIndex];
             
             // Remove from current position
             const newBatchWithoutCard = batch.filter((_, i) => i !== currentCardIndex);
