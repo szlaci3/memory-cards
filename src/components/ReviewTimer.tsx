@@ -9,7 +9,7 @@ export function formatTimerMs(ms: number): string {
 	const sign = ms < 0 ? "-" : "";
 	const absoluteMs = Math.abs(ms);
 	const totalSeconds = Math.floor(absoluteMs / 1000);
-	const milliseconds = absoluteMs % 1000;
+	const deciseconds = absoluteMs % 10;
 	const seconds = totalSeconds % 60;
 	const minutes = Math.floor(totalSeconds / 60) % 60;
 	const hours = Math.floor(totalSeconds / 3600);
@@ -18,7 +18,7 @@ export function formatTimerMs(ms: number): string {
 	if (hours > 0) parts.push(hours.toString());
 	if (minutes > 0) parts.push(minutes.toString());
 	parts.push(seconds.toString());
-	parts.push(milliseconds.toString().padStart(3, "0"));
+	parts.push(deciseconds.toString());
 
 	return `${sign}${parts.join(":")}`;
 }
@@ -45,7 +45,7 @@ function ReviewTimer({
 			<span>diff {diffText}</span>
 			<button
 				type="button"
-				className="review-timer-skip"
+				className="review-timer-skip winter"
 				onClick={onSkip}
 				disabled={isSkipped}
 			>

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
 import { db } from "utils/db";
 import "css/App.css";
+import { formatDueAt } from "utils/utils";
 import ReviewTimer from "./ReviewTimer";
 
 interface SentencePracticeProps {
@@ -304,203 +305,217 @@ function SentencePractice({
 					</div>
 				</div>
 
-				<div className="flashcard">
-					<div className="language-indicator">
-						<span className="category-label">{pageTitle}</span>
-					</div>
-
-					<div className="card-content">
-						<div className="side">
-							<h2>{promptText}</h2>
+				<div className="card-list">
+					<div className="flashcard">
+						<div className="language-indicator">
+							<span className="category-label">{pageTitle}</span>
 						</div>
 
-						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-						<div
-							className="sentence-yellow"
-							onClick={() => {
-								const el = hiddenInputRef.current;
-								if (el && document.activeElement !== el) el.focus();
-							}}
-						>
-							{words.map((word, i) => {
-								const isCompleted = i < completedWordsIndex;
-								return (
-									<span key={i}>
-										{/* {isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")} */}
-										{isCompleted ? word : "__"}
-									</span>
-								);
-							})}
-						</div>
-					</div>
+						<div className="card-content">
+							<div className="side">
+								<h2>{promptText}</h2>
+							</div>
 
-					<div className="controls">
-						<ReviewTimer
-							lastTimerMs={currentSentence.timerMs}
-							currentTimerMs={currentTimerMs}
-							isSkipped={isTimerSkipped}
-							onSkip={() => setIsTimerSkipped(true)}
-						/>
-
-						{/* Hidden input keeps iOS keyboard open during the typing phase */}
-						{!isFullyRevealed && (
-							<input
-								ref={hiddenInputRef}
-								type="text"
-								autoComplete="off"
-								autoCorrect="off"
-								autoCapitalize="none"
-								autoFocus={true}
-								spellCheck={false}
-								value=""
-								onChange={(e) => {
-									const typed = e.target.value.slice(-1).toLowerCase();
-									if (!typed) return;
-									const currentWord = words[completedWordsIndex];
-									if (!currentWord) return;
-									const match = currentWord.match(/[a-z0-9]/i);
-									const expectedChar = match ? match[0].toLowerCase() : null;
-									if (expectedChar && typed === expectedChar) {
-										setCompletedWordsIndex((prev) => prev + 1);
-									}
-								}}
-								style={{
-									position: "fixed",
-									top: 0,
-									left: 0,
-									width: "1px",
-									height: "1px",
-									opacity: 0,
-									pointerEvents: "none",
-								}}
-							/>
-						)}
-						{!isFullyRevealed && (
-							<button
-								type="button"
-								className="show-button"
+							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+							<div
+								className="sentence-yellow"
 								onClick={() => {
-									stopTimer();
-									setCompletedWordsIndex(words.length);
+									const el = hiddenInputRef.current;
+									if (el && document.activeElement !== el) el.focus();
 								}}
 							>
-								Show Answer
-							</button>
-						)}
+								{words.map((word, i) => {
+									const isCompleted = i < completedWordsIndex;
+									return (
+										<span key={i}>
+											{/* {isCompleted ? word : word.replace(/[a-z0-9]/gi, "_")} */}
+											{isCompleted ? word : "__"}
+										</span>
+									);
+								})}
+							</div>
+						</div>
 
-						{isFullyRevealed && (
-							<div className="review-buttons" style={{ marginTop: "20px" }}>
-								<div className="rating-buttons">
-									<button type="button" onClick={() => handleRateSentence(0)}>
-										<div>10</div>
-										<div>min</div>
-									</button>
-									<div className="interactive">
-										<input
-											autoFocus
-											type="number"
-											value={inputValue}
-											onChange={(ev) => {
-												const num =
-													ev.target.value === ""
-														? ""
-														: Math.max(
-																1,
-																Math.min(999, +ev.target.value),
-															).toString();
-												setInputValue(num);
-											}}
-											onFocus={() => setInputValue("")}
-											min={1}
-											max={999}
-										/>
+						<div className="controls">
+							<ReviewTimer
+								lastTimerMs={currentSentence.timerMs}
+								currentTimerMs={currentTimerMs}
+								isSkipped={isTimerSkipped}
+								onSkip={() => setIsTimerSkipped(true)}
+							/>
+
+							{/* Hidden input keeps iOS keyboard open during the typing phase */}
+							{!isFullyRevealed && (
+								<input
+									ref={hiddenInputRef}
+									type="text"
+									autoComplete="off"
+									autoCorrect="off"
+									autoCapitalize="none"
+									autoFocus={true}
+									spellCheck={false}
+									value=""
+									onChange={(e) => {
+										const typed = e.target.value.slice(-1).toLowerCase();
+										if (!typed) return;
+										const currentWord = words[completedWordsIndex];
+										if (!currentWord) return;
+										const match = currentWord.match(/[a-z0-9]/i);
+										const expectedChar = match ? match[0].toLowerCase() : null;
+										if (expectedChar && typed === expectedChar) {
+											setCompletedWordsIndex((prev) => prev + 1);
+										}
+									}}
+									style={{
+										position: "fixed",
+										top: 0,
+										left: 0,
+										width: "1px",
+										height: "1px",
+										opacity: 0,
+										pointerEvents: "none",
+									}}
+								/>
+							)}
+							{!isFullyRevealed && (
+								<button
+									type="button"
+									className="show-button"
+									onClick={() => {
+										stopTimer();
+										setCompletedWordsIndex(words.length);
+									}}
+								>
+									Show Answer
+								</button>
+							)}
+
+							{isFullyRevealed && (
+								<div className="review-buttons" style={{ marginTop: "20px" }}>
+									<div className="rating-buttons">
+										<button type="button" onClick={() => handleRateSentence(0)}>
+											<div>10</div>
+											<div>min</div>
+										</button>
+										<div className="interactive">
+											<input
+												autoFocus
+												type="number"
+												value={inputValue}
+												onChange={(ev) => {
+													const num =
+														ev.target.value === ""
+															? ""
+															: Math.max(
+																	1,
+																	Math.min(999, +ev.target.value),
+																).toString();
+													setInputValue(num);
+												}}
+												onFocus={() => setInputValue("")}
+												min={1}
+												max={999}
+											/>
+											<button
+												type="button"
+												onClick={() => handleRateSentence(inputValue)}
+												className="interactive-button"
+											>
+												<div>{inputValue || "0"}</div>
+												<div>
+													day
+													{inputValue === "" || inputValue === "1" ? "" : "s"}
+												</div>
+											</button>
+										</div>
 										<button
 											type="button"
-											onClick={() => handleRateSentence(inputValue)}
-											className="interactive-button"
+											onClick={() => handleRateSentence(option3)}
 										>
-											<div>{inputValue || "0"}</div>
-											<div>
-												day{inputValue === "" || inputValue === "1" ? "" : "s"}
-											</div>
+											<div>{option3}</div>
+											<div>day{option3 === 1 ? "" : "s"}</div>
+										</button>
+										<button
+											type="button"
+											onClick={() => handleRateSentence(option4)}
+										>
+											<div>{option4}</div>
+											<div>days</div>
 										</button>
 									</div>
+
+									<div className="movement-buttons">
+										<button
+											type="button"
+											className="winter"
+											onClick={() => handleMove(7)}
+										>
+											#7
+										</button>
+										<button
+											type="button"
+											className="winter"
+											onClick={() => handleMove(30)}
+										>
+											#30
+										</button>
+										<button
+											type="button"
+											className="winter"
+											onClick={handleSkip}
+										>
+											Last
+										</button>
+									</div>
+								</div>
+							)}
+
+							{isFullyRevealed && (
+								<div
+									style={{
+										display: "flex",
+										gap: "10px",
+										justifyContent: "center",
+										marginTop: "10px",
+									}}
+								>
 									<button
 										type="button"
-										onClick={() => handleRateSentence(option3)}
+										className="action-button primary"
+										onClick={() => onEditSentence(currentSentence)}
 									>
-										<div>{option3}</div>
-										<div>day{option3 === 1 ? "" : "s"}</div>
-									</button>
-									<button
-										type="button"
-										onClick={() => handleRateSentence(option4)}
-									>
-										<div>{option4}</div>
-										<div>days</div>
+										Edit
 									</button>
 								</div>
+							)}
 
-								<div className="movement-buttons">
+							{isDeleteMode && (
+								<div
+									style={{
+										display: "flex",
+										gap: "10px",
+										justifyContent: "center",
+										marginTop: "10px",
+									}}
+								>
 									<button
 										type="button"
-										className="winter"
-										onClick={() => handleMove(7)}
+										className="delete-button"
+										onClick={() => handleDelete(currentSentence.id)}
 									>
-										#7
-									</button>
-									<button
-										type="button"
-										className="winter"
-										onClick={() => handleMove(30)}
-									>
-										#30
-									</button>
-									<button type="button" className="winter" onClick={handleSkip}>
-										Last
+										Delete
 									</button>
 								</div>
-							</div>
-						)}
-
-						{isFullyRevealed && (
-							<div
-								style={{
-									display: "flex",
-									gap: "10px",
-									justifyContent: "center",
-									marginTop: "10px",
-								}}
-							>
-								<button
-									type="button"
-									className="action-button primary"
-									onClick={() => onEditSentence(currentSentence)}
-								>
-									Edit
-								</button>
-							</div>
-						)}
-
-						{isDeleteMode && (
-							<div
-								style={{
-									display: "flex",
-									gap: "10px",
-									justifyContent: "center",
-									marginTop: "10px",
-								}}
-							>
-								<button
-									type="button"
-									className="delete-button"
-									onClick={() => handleDelete(currentSentence.id)}
-								>
-									Delete
-								</button>
-							</div>
-						)}
+							)}
+						</div>
 					</div>
+				</div>
+
+				<div className="debug-info">
+					<div>Index:</div>
+					<div>{currentIndex}</div>
+					<div>Rate: {currentSentence.rate}</div>
+					<div>{formatDueAt(currentSentence.dueAt)}</div>
 				</div>
 			</div>
 		</div>
