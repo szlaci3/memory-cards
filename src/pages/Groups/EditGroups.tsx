@@ -84,8 +84,8 @@ function EditGroups({ onEdit }: EditGroupsProps) {
 						className="group-list-item"
 						style={{
 							backgroundColor:
-								group.id === defaultGroupId ? "rgba(171, 145, 0, 0.3)" : undefined,
-							border: group.id === defaultGroupId ? "1px solid rgba(171, 145, 0, 1)" : undefined,
+								group.id === defaultGroupId ? "rgba(248, 201, 92, 0.22)" : undefined,
+							border: group.id === defaultGroupId ? "1px solid rgba(248, 201, 92, 0.82)" : undefined,
 						}}
 					>
 						<span className="group-name">

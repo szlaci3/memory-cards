@@ -38,7 +38,7 @@ h1 {
 .category-select:focus {
 	outline: none;
 	border-color: var(--accent-2);
-	box-shadow: 0 0 0 2px rgba(77, 212, 172, 0.24);
+	box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .category-select option {
@@ -76,7 +76,7 @@ h1 {
 .side-input:focus {
 	outline: none;
 	border-color: var(--accent-2);
-	box-shadow: 0 0 0 2px rgba(77, 212, 172, 0.24);
+	box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .button-group {

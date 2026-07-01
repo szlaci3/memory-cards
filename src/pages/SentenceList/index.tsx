@@ -286,7 +286,7 @@ function SentenceList() {
 									<div className="card-list-side" style={{ fontWeight: "bold" }}>
 										{sentence.original || "Empty"}
 									</div>
-									<div className="card-list-side" style={{ fontSize: "0.9em", color: "#666" }}>
+									<div className="card-list-side" style={{ fontSize: "0.9em", color: "var(--text-secondary)" }}>
 										{sentence.translation || "Empty"}
 									</div>
 									<div

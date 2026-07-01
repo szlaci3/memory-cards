@@ -353,12 +353,12 @@ nav a {
 .search-input:focus {
 	outline: none;
 	border-color: var(--accent-2);
-	box-shadow: 0 0 0 2px rgba(77, 212, 172, 0.24);
+	box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .delete-all-button {
 	flex: unset;
-	background: linear-gradient(135deg, #dc2626, #b91c1c);
+	background: linear-gradient(135deg, var(--danger), var(--danger-strong));
 	color: white;
 	border: none;
 	padding: 0.5rem 1rem;
@@ -369,7 +369,7 @@ nav a {
 }
 
 .delete-all-button:hover {
-	background: linear-gradient(135deg, #b91c1c, #991b1b);
+	background: linear-gradient(135deg, var(--danger-strong), #8a6418);
 }
 
 .export-button {
@@ -384,7 +384,7 @@ nav a {
 }
 
 .export-button:hover {
-	background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+	background: linear-gradient(135deg, var(--info-strong), var(--accent-3));
 }
 
 .import-button {
@@ -401,7 +401,7 @@ nav a {
 }
 
 .import-button:hover {
-	background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+	background: linear-gradient(135deg, var(--info-strong), var(--accent-3));
 }
 
 .fast-forward-button,
@@ -419,7 +419,7 @@ nav a {
 
 .fast-forward-button:hover,
 .slow-down-button:hover {
-	background: linear-gradient(135deg, var(--accent-2-strong), #0f8f75);
+	background: linear-gradient(135deg, var(--accent-2-strong), #a77919);
 }
 
 .card-count {
@@ -509,12 +509,12 @@ nav a {
 }
 
 .delete-button {
-	background: linear-gradient(135deg, #dc2626, #b91c1c);
+	background: linear-gradient(135deg, var(--danger), var(--danger-strong));
 	color: white;
 }
 
 .delete-button:hover {
-	background: linear-gradient(135deg, #b91c1c, #991b1b);
+	background: linear-gradient(135deg, var(--danger-strong), #8a6418);
 }
 
 .no-cards-message {
@@ -624,11 +624,11 @@ nav a {
 }
 
 .group-card-side:nth-child(1) {
-	color: #d66f77;
+	color: var(--accent-2);
 }
 
 .group-card-side:nth-child(2) {
-	color: #54b99e;
+	color: var(--accent);
 }
 
 .group-card-item.selected .group-card-side:nth-child(1) {
@@ -667,11 +667,11 @@ nav a {
 }
 
 .remove-card-btn {
-	background: linear-gradient(135deg, #dc2626, #b91c1c);
+	background: linear-gradient(135deg, var(--danger), var(--danger-strong));
 }
 
 .remove-card-btn:hover {
-	background: linear-gradient(135deg, #b91c1c, #991b1b);
+	background: linear-gradient(135deg, var(--danger-strong), #8a6418);
 }
 
 .add-card-btn {
@@ -683,7 +683,7 @@ nav a {
 }
 
 .group-list-item {
-	background-color: #94949426;
+	background-color: var(--surface-muted);
 	border: none;
 	box-shadow: 0 20px 35px -12px var(--accent-glow);
 	backdrop-filter: blur(10px);
@@ -718,7 +718,7 @@ nav a {
 }
 
 .app-container .groups-content .flashcard button:not(.winter) {
-	background: linear-gradient(135deg, #9a5f9f, var(--accent));
+	background: linear-gradient(135deg, var(--accent-3), var(--accent));
 }
 
 .delete-all-groups-btn,
