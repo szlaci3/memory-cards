@@ -241,7 +241,7 @@ nav a {
 	width: calc(100% - 20px);
 	margin: 0 10px;
 	background: var(--button-background);
-	color: white;
+	color: black;
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
 	transition: background 0.2s;
@@ -374,7 +374,7 @@ nav a {
 
 .export-button {
 	background: linear-gradient(135deg, var(--info), var(--info-strong));
-	color: white;
+	color: black;
 	border: none;
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
@@ -389,7 +389,7 @@ nav a {
 
 .import-button {
 	background: linear-gradient(135deg, var(--info), var(--info-strong));
-	color: white;
+	color: black;
 	border: none;
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
@@ -408,7 +408,7 @@ nav a {
 .slow-down-button {
 	flex: 0;
 	background: linear-gradient(135deg, var(--accent-2), var(--accent-2-strong));
-	color: white;
+	color: black;
 	border: none;
 	padding: 0.5rem 1rem;
 	border-radius: 0.5rem;
@@ -497,7 +497,7 @@ nav a {
 	font-weight: 500;
 	cursor: pointer;
 	transition: background 0.2s;
-	color: white;
+	color: black;
 }
 
 .edit-button {
@@ -510,6 +510,7 @@ nav a {
 
 .delete-button {
 	background: linear-gradient(135deg, #dc2626, #b91c1c);
+	color: white;
 }
 
 .delete-button:hover {
@@ -552,7 +553,7 @@ nav a {
 }
 
 .search-clear-btn:hover {
-	color: white;
+	color: black;
 }
 
 /* Side colors */
@@ -662,7 +663,7 @@ nav a {
 	font-weight: 500;
 	cursor: pointer;
 	transition: background 0.2s;
-	color: white;
+	color: black;
 }
 
 .remove-card-btn {
@@ -724,7 +725,7 @@ nav a {
 .group-actions > button,
 .save-group-btn,
 .set-cards-to-due-btn {
-	color: white;
+	color: black;
 }
 
 .winter {
@@ -734,7 +735,7 @@ nav a {
 
 .action-button.primary {
 	background: var(--button-background);
-	color: white;
+	color: black;
 }
 
 .movement-buttons {
