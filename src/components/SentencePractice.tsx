@@ -1,3 +1,7 @@
+import { useReviewMode } from "../hooks/useReviewMode";
+import { useReviewCountdown } from "../hooks/useReviewCountdown";
+import ReviewCountdown from "./ReviewCountdown";
+import ReviewModeToggle from "./ReviewModeToggle";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import type { SentenceType } from "types/index";
@@ -15,6 +19,7 @@ function SentencePractice({
 	direction,
 	isFullBatch = false,
 }: SentencePracticeProps) {
+	const { enabled: timerMode } = useReviewMode();
 	const [batch, setBatch] = useState<SentenceType[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [completedWordsIndex, setCompletedWordsIndex] = useState(0);
@@ -108,7 +113,7 @@ function SentencePractice({
 			setInputValue(currentSentence.rate === 1 ? "2" : "1");
 			if (currentSentence.rate === 0) setInputValue("1");
 		}
-	}, [currentSentence]);
+	}, [currentSentence, timerMode]);
 
 	useEffect(() => {
 		const intervalId = window.setInterval(() => {
@@ -120,7 +125,7 @@ function SentencePractice({
 		}, 1000);
 
 		return () => window.clearInterval(intervalId);
-	}, [currentSentence]);
+	}, [currentSentence, timerMode]);
 
 	const stopTimer = () => {
 		if (timerStoppedRef.current) return timerValueRef.current;
@@ -135,14 +140,14 @@ function SentencePractice({
 	// Auto-advance if a word has no alphanumeric characters
 	useEffect(() => {
 		if (!currentSentence) return;
-		if (completedWordsIndex < words.length) {
+		if (!timerMode && completedWordsIndex < words.length) {
 			const currentWord = words[completedWordsIndex];
 			const match = currentWord.match(/[a-z0-9]/i);
 			if (!match) {
 				setCompletedWordsIndex((prev) => prev + 1);
 			}
 		}
-	}, [completedWordsIndex, words, currentSentence]);
+	}, [completedWordsIndex, words, currentSentence, timerMode]);
 
 	// Keep the hidden input focused so iOS shows the keyboard during typing phase
 	useEffect(() => {
@@ -159,6 +164,7 @@ function SentencePractice({
 	}, [currentSentence, completedWordsIndex, words]);
 
 	const handleRateSentence = async (rate: string | number) => {
+        countdown.cancel();
 		if (!currentSentence) return;
 
 		const numericRate =
@@ -190,6 +196,7 @@ function SentencePractice({
 	};
 
 	const handleMove = (step: number) => {
+        countdown.cancel();
 		if (!currentSentence) return;
 		const timerMs = stopTimer();
 		setBatch((prev) => {
@@ -206,6 +213,7 @@ function SentencePractice({
 	};
 
 	const handleSkip = () => {
+        countdown.cancel();
 		if (!currentSentence) return;
 		const timerMs = stopTimer();
 		setBatch((prev) => {
@@ -235,7 +243,17 @@ function SentencePractice({
 		}
 	};
 
-	if (batch.length === 0) {
+	const countdown = useReviewCountdown(currentSentence, currentSentence?.timerMs, () => {
+        stopTimer();
+        setCompletedWordsIndex(words.length);
+    }, (clicked) => {
+        if (clicked) {
+            const rate = currentSentence.rate === 0 ? 2 : currentSentence.rate || 2;
+            void handleRateSentence(Math.max(3, Math.floor(rate * 1.4)));
+        } else handleMove(7);
+    });
+
+    if (batch.length === 0) {
 		return (
 			<div className="app-container">
 				<div className="background">
@@ -301,7 +319,8 @@ function SentencePractice({
 			<div className="content">
 				<div className="header">
 					<div className="streak">
-						<span>Sentences left: {batch.length - currentIndex}</span>
+						<ReviewModeToggle />
+                        <span>Sentences left: {batch.length - currentIndex}</span>
 					</div>
 				</div>
 
@@ -337,7 +356,8 @@ function SentencePractice({
 						</div>
 
 						<div className="controls">
-							<ReviewTimer
+							{countdown.enabled && <ReviewCountdown duration={countdown.duration} remaining={countdown.remaining} />}
+                            <ReviewTimer
 								lastTimerMs={currentSentence.timerMs}
 								currentTimerMs={currentTimerMs}
 								isSkipped={isTimerSkipped}
@@ -345,7 +365,7 @@ function SentencePractice({
 							/>
 
 							{/* Hidden input keeps iOS keyboard open during the typing phase */}
-							{!isFullyRevealed && (
+							{!countdown.enabled && !isFullyRevealed && (
 								<input
 									ref={hiddenInputRef}
 									type="text"
@@ -382,8 +402,9 @@ function SentencePractice({
 									type="button"
 									className="show-button"
 									onClick={() => {
-										stopTimer();
-										setCompletedWordsIndex(words.length);
+										if (countdown.enabled) { countdown.reveal(true); return; }
+                                        stopTimer();
+                                        setCompletedWordsIndex(words.length);
 									}}
 								>
 									Show Answer

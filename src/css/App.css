@@ -761,3 +761,13 @@ nav a {
 	font-size: 2rem;
 	color: #777;
 }
+
+.review-countdown { display: grid; gap: 10px; width: 100%; margin-bottom: 12px; }
+.extra-seconds { display: flex; align-items: center; gap: 10px; }
+.extra-seconds button { flex: 0 0 40px; min-height: 40px; font-size: 1.3rem; }
+.extra-seconds button:disabled { opacity: .4; }
+.timer-meter { position: relative; flex: 1; height: 32px; background: #24334b; border-radius: 8px; overflow: hidden; text-align: center; }
+.timer-fill { position: absolute; inset: 0 auto 0 0; background: #267c73; }
+.timer-meter span { position: relative; line-height: 32px; color: white; font-weight: 600; }
+.review-mode-toggle { padding: 8px 16px; border-radius: 20px; }
+.review-mode-toggle[aria-checked="true"] { background: #267c73; color: white; }

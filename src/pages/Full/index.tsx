@@ -1,3 +1,4 @@
+import ReviewModeToggle from "components/ReviewModeToggle";
 import Review from "components/Review";
 import { useEffect, useState } from "react";
 import type { CardType } from "types/index";
@@ -71,10 +72,7 @@ function Full() {
 				<div className="header">
 					<div className="streak">
 						<span>Cards in batch: {cards.length}</span>
-						<span>🔥🔥🔥</span>
-					</div>
-					<div className="progress-bar">
-						<div className="progress-fill" />
+						<ReviewModeToggle />
 					</div>
 				</div>
 

@@ -1,3 +1,6 @@
+import { useReviewMode } from "../hooks/useReviewMode";
+import { useReviewCountdown } from "../hooks/useReviewCountdown";
+import ReviewCountdown from "./ReviewCountdown";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import type { CardCategory, CardType } from "types/index";
@@ -14,6 +17,7 @@ interface ReviewCardProps {
 }
 
 function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
+	const { enabled: timerMode } = useReviewMode();
 	const [revealCount, setRevealCount] = useState(0);
 	const [inputValue, setInputValue] = useState<string>("1");
 	const [currentTimerMs, setCurrentTimerMs] = useState(0);
@@ -43,7 +47,7 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 		timerStartedAtRef.current = Date.now();
 		timerStoppedRef.current = false;
 		timerValueRef.current = 0;
-	}, [card]);
+	}, [card, timerMode]);
 
 	useEffect(() => {
 		const intervalId = window.setInterval(() => {
@@ -55,7 +59,7 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 		}, 1000);
 
 		return () => window.clearInterval(intervalId);
-	}, [card]);
+	}, [card, timerMode]);
 
 	const stopTimer = () => {
 		if (timerStoppedRef.current) return timerValueRef.current;
@@ -68,6 +72,7 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 	};
 
 	const handleShowNextSide = () => {
+        if (countdown.enabled) { countdown.reveal(true); return; }
 		if (revealCount === 0) {
 			stopTimer();
 		}
@@ -75,6 +80,7 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 	};
 
 	const handleRateCard = (rate: string | number) => {
+        countdown.cancel();
 		const numericRate =
 			typeof rate === "string" ? (rate === "" ? 1 : parseInt(rate)) : rate;
 		const timerMs = stopTimer();
@@ -83,11 +89,13 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 	};
 
 	const handleMoveCard = (step: number) => {
+        countdown.cancel();
 		const timerMs = stopTimer();
 		onMove(step, isTimerSkipped ? undefined : timerMs);
 	};
 
 	const handleSkipCard = () => {
+        countdown.cancel();
 		const timerMs = stopTimer();
 		onSkip(isTimerSkipped ? undefined : timerMs);
 	};
@@ -101,7 +109,15 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 	const isGroup = window.location.pathname.includes("/groups");
 	const isInverseOrGroup = isInverse || isGroup;
 
-	const renderSide = (side: string, index: number) => (
+	const countdown = useReviewCountdown(card, card.timerMs, () => {
+        stopTimer();
+        setRevealCount(Math.max(1, card.sides.length - 1));
+    }, (clicked) => {
+        if (clicked) handleRateCard(isInverseOrGroup ? option3 : option4);
+        else handleMoveCard(7);
+    });
+
+    const renderSide = (side: string, index: number) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <Sides are static>
 		<div key={index} className={`side ${index % 2 === 0 ? "" : "side-yellow"}`}>
 			<h2>{side}</h2>
@@ -123,7 +139,8 @@ function ReviewCard({ card, onRate, onMove, onSkip }: ReviewCardProps) {
 					</div>
 
 					<div className="controls">
-						<ReviewTimer
+						{countdown.enabled && <ReviewCountdown duration={countdown.duration} remaining={countdown.remaining} />}
+                        <ReviewTimer
 							lastTimerMs={card.timerMs}
 							currentTimerMs={currentTimerMs}
 							isSkipped={isTimerSkipped}

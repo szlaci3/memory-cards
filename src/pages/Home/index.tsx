@@ -1,3 +1,4 @@
+import ReviewModeToggle from "components/ReviewModeToggle";
 import Review from "components/Review";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
@@ -128,10 +129,7 @@ function Home() {
 				<div className="header">
 					<div className="streak">
 						<span>All cards: {allCards.length}, Due cards: {batch.length}</span>
-						<span>🔥🔥🔥</span>
-					</div>
-					<div className="progress-bar">
-						<div className="progress-fill" />
+						<ReviewModeToggle />
 					</div>
 				</div>
 
